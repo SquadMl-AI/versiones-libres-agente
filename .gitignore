@@ -1,0 +1,66 @@
+node_modules
+.env
+*.env
+.env.*
+!.env.example
+.venv
+
+venv/
+.vscode/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs y archivos temporales
+*.log
+.DS_Store
+
+# Archivos de datos y ejemplos no esenciales
+installed.txt
+backend/app/utils/__pycache__/
+
+# Backend cache y logs
+backend/app/__pycache__/
+backend/app/api/v1/__pycache__/
+backend/app/api/v1/endpoints/__pycache__/
+backend/app/db/__pycache__/
+backend/app/prompts/__pycache__/
+backend/app/schemas/__pycache__/
+backend/app/services/__pycache__/
+backend/app/utils/__pycache__/
+backend/app/logs/
+
+# Test y coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Otros archivos temporales
+*.swp
+*.swo
+*.tmp
+*.bak
+*.cache
+*.egg-info/
+*.sqlite3
+*.db
+*.pkl
+*.zip
+*.tar.gz
+*.ipynb_checkpoints/
+
+# Build frontend
+frontend/node_modules/
+frontend/dist/
+
+# System
+Thumbs.db
+
+# Excluir archivos de ejemplo y datos
+backend/schemas/*.json
+
+# Permitir archivos de configuración de ejemplo
+!.env.example
+
+DOC_ES/
