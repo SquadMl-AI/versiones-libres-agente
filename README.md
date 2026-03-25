@@ -9,7 +9,7 @@ Memorias 975 es una aplicación web para la exploración, búsqueda y síntesis 
 
 - `backend/` – API y lógica de negocio (FastAPI, Python)
 - `frontend/` – Interfaz de usuario (React, Vite)
-- `requirements.txt` – Dependencias Python
+- `requirements.txt` – Dependencias Python 
 - `package.json` (en frontend) – Dependencias Node.js
 
 ---
