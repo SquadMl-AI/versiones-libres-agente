@@ -1,0 +1,272 @@
+#root {
+  max-width: 1280px;
+  margin: 0 5%;
+  padding: 2rem;
+  text-align: center;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+@keyframes progressBar {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+.progress-bar-animated {
+  animation: progressBar 1.2s linear infinite;
+}
+
+.tab-nav {
+  margin-bottom: 20px;
+  text-align: center;
+}
+.tab-btn {
+  margin-right: 8px;
+  background: #fff;
+  color: #222;
+  border: 1px solid #ccc;
+  border-radius: 5px 5px 0 0;
+  padding: 8px 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.tab-btn.active {
+  background: #000 !important;
+  color: #fff !important;
+  border: 2px solid #000 !important;
+  border-bottom: 4px solid #e0e0e0 !important; /* subrayado gris claro */
+  font-weight: bold;
+  z-index: 2;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  /* width: 100%; */
+  height: 100%;
+  min-height: 500px;
+  border: 1px solid #414141;
+  background-color: white;
+  padding: 24px;
+}
+.flex-1 {
+  flex: 1;
+}
+
+.h-full {
+  height: 100%;
+}
+.overflow-y-auto {
+  overflow-y: auto;
+}
+.content-input {
+  height: fit-content;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc !important;
+  border-radius: 8px;
+  box-sizing: border-box;
+  overflow: auto;
+  padding: 0 10px;
+}
+
+.content-input input {
+  width: 100%;
+  height: 40px;
+  outline: 0;
+  border: none !important;
+}
+.content-input input:focus {
+  outline: none !important;
+  border: 0 !important;
+}
+
+.content-input .button-send {
+  height: fit-content !important;
+  padding: 0;
+  border: none;
+  right: 10px;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+.bot-message {
+  background-color: #e6f7ff;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+}
+
+.user-message {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+}
+.self-start {
+  align-self: flex-start;
+}
+.self-end {
+  align-self: flex-end;
+}
+
+.w-1\/2 {
+  width: 50%;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.gap-2 {
+  gap: 8px;
+}
+.w-full {
+  width: 100%;
+}
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
+.retry-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0;
+  height: 32px;
+  width: 32px;
+  border-radius: 100%;
+  justify-content: center;
+  background-color: #fdc9cb !important;
+  border: 1px solid #e44143 !important;
+}
+.flex-row {
+  flex-direction: row;
+}
+.error-message {
+  border: 1px solid #e44143 !important;
+  background-color: #fdc9cb !important;
+  color: #e44143 !important;
+}
+
+.px-2 {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.py-4 {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+.max-w-8\/12 {
+  max-width: 66.666667%;
+}
+.button-document {
+  background-color: transparent;
+  border: none;
+  height: fit-content;
+  width: 100%;
+  text-align: left;
+  font-weight: 700;
+  color: #746aff !important;
+  padding: 0 !important;
+  border-bottom: 1px solid transparent !important;
+  border-radius: 0 !important;
+  padding: 4px 0 !important;
+}
+.button-document:hover {
+  border-bottom: 1px solid #746aff !important;
+}
+.items-center {
+  align-items: center;
+}
+
+.content-document {
+  padding: 0px 10px;
+}
+
+.page-document {
+  border: 1px solid #dadada;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  width: fit-content;
+}
+
+.page-document.active {
+  border: 1px solid #1a1b41;
+}
+/* .react-pdf__Page__canvas{
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+} */
+em {
+  background-color: #faed73; /* amarillo suave */
+  font-style: normal; /* opcional: elimina cursiva si no la quieres */
+  padding: 2px 4px;
+  border-radius: 4px;
+}

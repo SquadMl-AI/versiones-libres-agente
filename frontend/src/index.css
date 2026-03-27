@@ -1,0 +1,263 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+ 
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+ 
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+ 
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+ 
+body {
+  margin: 0;
+  place-items: center;
+  width: 100%;
+  min-height: 100vh;
+}
+ 
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+ 
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+ 
+/* Forzar fondo claro global y texto oscuro */
+body,
+#root {
+  background: #fff !important;
+  color: #222 !important;
+}
+ 
+/* Forzar fondo claro y texto oscuro en todos los elementos de formulario, incluso en dark mode */
+input,
+select,
+textarea,
+button {
+  background: #fff;
+  color: #222;
+  border-color: #ccc;
+  box-shadow: none;
+}
+ 
+input:disabled,
+select:disabled,
+textarea:disabled,
+button:disabled {
+  background: #f5f5f5 !important;
+  color: #888 !important;
+}
+ 
+/* Eliminar autofill amarillo en Chrome */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+  box-shadow: 0 0 0 1000px #fff inset !important;
+  -webkit-text-fill-color: #222 !important;
+  color: #222 !important;
+}
+input:-webkit-autofill:disabled,
+textarea:-webkit-autofill:disabled,
+select:-webkit-autofill:disabled {
+  box-shadow: 0 0 0 1000px #f5f5f5 inset !important;
+  -webkit-box-shadow: 0 0 0 1000px #f5f5f5 inset !important;
+  -webkit-text-fill-color: #888 !important;
+  color: #888 !important;
+}
+input:-moz-autofill,
+textarea:-moz-autofill,
+select:-moz-autofill {
+  box-shadow: 0 0 0 1000px #fff inset !important;
+  color: #222 !important;
+}
+input:-moz-autofill:disabled,
+textarea:-moz-autofill:disabled,
+select:-moz-autofill:disabled {
+  box-shadow: 0 0 0 1000px #f5f5f5 inset !important;
+  color: #888 !important;
+}
+ 
+/* Estilos para pestañas activas: fondo verde oscuro y letra blanca */
+.tab.active,
+.tab--active,
+.Tabs__tab--selected,
+.tab[aria-selected="true"] {
+  background: #145a32 !important;
+  color: #fff !important;
+  border-color: #0b3d1c !important;
+  font-weight: bold;
+  z-index: 2;
+}
+.tab,
+.tab--inactive,
+.Tabs__tab,
+.tab[aria-selected="false"] {
+  background: #f8f8f8;
+  color: #222;
+  border-color: #ccc;
+  z-index: 1;
+}
+ 
+/* Tabs principales: fondo negro y letra blanca para la activa */
+.tab,
+.Tabs__tab,
+nav > .tab {
+  background: #f8f8f8;
+  color: #222;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+}
+.tab.active,
+.tab--active,
+.Tabs__tab--selected,
+nav > .tab.active,
+nav > .tab[aria-selected="true"] {
+  background: #000 !important;
+  color: #fff !important;
+  border: 2px solid #000 !important;
+  border-bottom: 4px solid #43e043 !important; /* línea inferior verde brillante */
+  font-weight: bold;
+  z-index: 2;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.tab:not(.active):not(.tab--active):not(.Tabs__tab--selected),
+nav > .tab:not(.active) {
+  background: #f8f8f8;
+  color: #222;
+  border-color: #ccc;
+  z-index: 1;
+}
+ 
+/* Borde negro para el cuadro de texto y botón de enviar del chat */
+.ChatTab__input,
+.ChatTab__sendButton,
+#chat-input,
+#chat-send,
+.chat-input,
+.chat-send {
+  border: 2px solid #000 !important;
+  box-shadow: none !important;
+}
+ 
+/* Borde negro para todos los cuadros de texto (inputs, textareas, selects) */
+input,
+textarea,
+select {
+  border: 2px solid #000 !important;
+  box-shadow: none !important;
+}
+ 
+/* Borde negro para los botones de las pestañas activas */
+.tab.active,
+.tab--active,
+.Tabs__tab--selected,
+nav > .tab.active,
+nav > .tab[aria-selected="true"],
+.tab.active button,
+.tab--active button,
+.Tabs__tab--selected button,
+nav > .tab.active button,
+nav > .tab[aria-selected="true"] button {
+  border: 2px solid #000 !important;
+}
+ 
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+ 
+.centered-list {
+  list-style-position: inside; /* Hace que el punto quede pegado al texto */
+  text-align: center; /* Centra el texto */
+  padding: 0;
+  margin: 0 auto;
+}
+ 
+.btn-chat {
+  padding: 0px;
+  margin: 0px;
+  height: 24px;
+  width: 24px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.btn-chat:hover {
+  background-color: #ccc;
+}
+ 
+.btn-chat.active {
+  background-color: #ccc;
+}
+ 
+.mt-2 {
+  margin-top: 8px;
+}
+
+.ia-response table {
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+ 
+.ia-response th,
+.ia-response td {
+  border: 1px solid #000;
+  padding: 8px;
+  text-align: left;
+}
+.ia-response ul li::marker,
+.ia-response ol li::marker {
+  color: #000;
+}
+ 
+.message-content {
+  width: 100%;
+}

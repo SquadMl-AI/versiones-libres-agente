@@ -1,0 +1,264 @@
+"""
+Búsqueda híbrida en Elasticsearch Cloud (KNN + texto) para Memorias 975.
+Requiere variables de entorno:
+- ES_ENDPOINT
+- ES_API_KEY
+- INDEX_NAME
+- EMBEDDING_ENDPOINT
+- EMBEDDING_API_KEY
+
+Extrae embeddings con Azure OpenAI y consulta Elasticsearch Cloud usando API Key.
+"""
+
+# Importaciones necesarias
+import os  # Para interactuar con el sistema operativo, como leer variables de entorno.
+import requests  # Para realizar peticiones HTTP a la API de Azure OpenAI.
+from elasticsearch import Elasticsearch  # Cliente oficial de Elasticsearch para Python.
+from elasticsearch.exceptions import RequestError  # Para manejar errores específicos de Elasticsearch.
+from dotenv import load_dotenv  # Para cargar variables de entorno desde un archivo .env.
+import json  # Para trabajar con datos en formato JSON.
+import logging  # Para registrar mensajes de información y errores.
+
+# Configuración del logging para mostrar mensajes informativos en la consola.
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Habilitar logging de depuración para Elasticsearch si se necesita
+# logging.getLogger('elasticsearch').setLevel(logging.DEBUG)
+
+# Carga las variables de entorno desde un archivo .env si existe.
+load_dotenv()
+
+# --- Variables de Entorno ---
+# Lee las credenciales y configuraciones desde las variables de entorno.
+# Si ES_ENDPOINT no está, intenta con ELASTICSEARCH_HOST por retrocompatibilidad.
+ES_ENDPOINT = os.getenv("ES_ENDPOINT") or os.getenv("ELASTICSEARCH_HOST")
+ES_API_KEY = os.getenv("ES_API_KEY")  # API Key para autenticarse con Elasticsearch.
+INDEX_NAME = os.getenv("INDEX_NAME")  # Nombre del índice en Elasticsearch a consultar.
+EMBEDDING_ENDPOINT = os.getenv("EMBEDDING_ENDPOINT")  # URL del servicio de embeddings de Azure OpenAI.
+EMBEDDING_API_KEY = os.getenv("EMBEDDING_API_KEY")  # API Key para el servicio de embeddings.
+VECTOR_FIELD = "q_3072_vec"  # Nombre del campo en Elasticsearch que contiene los vectores (embeddings).
+TEXT_FIELD = "content_ltks"  # Nombre del campo que contiene el texto para búsqueda de texto completo.
+
+# Leer también las variables de entorno de OpenAI directo
+OPENAI_EMBEDDING_API_KEY = os.getenv("OPENAI_EMBEDDING_API_KEY")
+OPENAI_EMBEDDING_ENDPOINT = os.getenv("OPENAI_EMBEDDING_ENDPOINT")
+
+# --- Cliente de Elasticsearch ---
+# Inicializa el cliente de Elasticsearch con la URL del endpoint y la API Key.
+# Este objeto se usará para todas las comunicaciones con el clúster de Elasticsearch.
+es_client = Elasticsearch(ES_ENDPOINT, api_key=ES_API_KEY)
+
+def get_embedding(text, provider="azure"):
+    """
+    Obtiene embeddings usando Azure OpenAI o OpenAI directo según el proveedor.
+
+    Args:
+        text (str): El texto de entrada para el cual se generará el embedding.
+        provider (str): El proveedor de embeddings a utilizar ("azure" u "openai").
+
+    Returns:
+        list: Un vector (lista de floats) que representa el embedding del texto.
+
+    Raises:
+        Exception: Si la petición a la API de Azure falla.
+    """
+    if provider == "openai":
+        headers = {"Content-Type": "application/json", "Authorization": f"Bearer {OPENAI_EMBEDDING_API_KEY}"}
+        data = {"input": text, "model": "text-embedding-3-large"}
+        endpoint = OPENAI_EMBEDDING_ENDPOINT
+    else:
+        headers = {"Content-Type": "application/json", "api-key": EMBEDDING_API_KEY}
+        data = {"input": text}
+        endpoint = EMBEDDING_ENDPOINT
+    try:
+        response = requests.post(endpoint, headers=headers, json=data)
+        response.raise_for_status()
+        return response.json()["data"][0]["embedding"]
+    except requests.RequestException as e:
+        logger.error(f"Error al obtener embedding ({provider}): {e}")
+        raise Exception(f"No se pudo obtener el embedding: {str(e)}")
+
+def hybrid_search_escloud(query, k=30, dataset_ids=None, document_ids=None, embedding_provider="azure", debug=False):
+    """
+    Realiza una búsqueda híbrida (BM25 + KNN) en Elasticsearch Cloud usando RRF (Reciprocal Rank Fusion).
+    Combina la búsqueda de texto tradicional (BM25) con la búsqueda por similitud vectorial (KNN).
+    
+    Args:
+        query (str): El texto de la consulta del usuario.
+        k (int): El número máximo de resultados a devolver.
+        dataset_ids (list, optional): Lista de IDs de "datasets" para filtrar los resultados.
+        document_ids (list, optional): Lista de IDs de documentos para filtrar los resultados.
+        embedding_provider (str, optional): Proveedor de embeddings a utilizar ("azure" u "openai").
+        debug (bool, optional): Si es True, imprime la consulta enviada a Elasticsearch.
+    
+    Returns:
+        list: Una lista de "hits" (documentos encontrados) ordenados por relevancia según RRF.
+    
+    Raises:
+        Exception: Si ocurre un error durante la consulta a Elasticsearch.
+    """
+    # 1. Generar el embedding para el texto de la consulta.
+    vector = get_embedding(query, provider=embedding_provider)
+    
+    # 2. Configurar los filtros para la consulta.
+    must_filters = []
+    if dataset_ids:
+        # Filtra por uno o más IDs de "dataset" (knowledge base).
+        must_filters.append({"terms": {"kb_id": dataset_ids}})
+    if document_ids:
+        # Filtra por uno o más IDs de documento.
+        must_filters.append({"terms": {"docnm_kwd": document_ids}})
+
+    # 3. Ajustar `num_candidates` para la búsqueda KNN.
+    # `num_candidates` es el número de vecinos que se consideran en cada shard.
+    # Debe ser >= k. Se aumenta un 50% para tener un margen, sin superar 10,000.
+    num_candidates = min(max(int(k * 1.5), k), 10000)
+
+    # 4. Construir la consulta específica para garantizar filtrado estricto.
+    # Primero definimos la estructura principal con filtros estrictos
+    # y luego añadimos la búsqueda híbrida.
+    
+    # Definimos la consulta base que aplica filtros estrictos
+    base_query = {
+        "bool": {
+            "filter": must_filters if must_filters else [],
+            "should": [
+                # Búsqueda de texto (BM25)
+                {
+                    "multi_match": {
+                        "query": query,
+                        "fields": [TEXT_FIELD],
+                        "boost": 1.0  # Peso para la búsqueda de texto
+                    }
+                },
+                # Búsqueda vectorial (KNN)
+                {
+                    "script_score": {
+                        "query": {"match_all": {}},  # Se filtrará por la parte de bool.filter
+                        "script": {
+                            # Cálculo de similitud de coseno con el vector de consulta
+                            "source": "cosineSimilarity(params.query_vector, doc[params.field]) + 1.0",
+                            "params": {
+                                "query_vector": vector,
+                                "field": VECTOR_FIELD
+                            }
+                        }
+                    }
+                }
+            ],
+            "minimum_should_match": 1  # Al menos una de las búsquedas debe coincidir
+        }
+    }
+    
+    # La consulta final incluye la estructura base y el tamaño de resultados
+    rrf_query = {
+        "size": k,
+        "query": base_query
+    }
+
+    # Si el modo debug está activado, imprime la consulta completa en formato JSON.
+    if debug:
+        logger.debug(f"Consulta RRF: {json.dumps(rrf_query, indent=2)}")
+
+    # 5. Ejecutar la consulta en Elasticsearch.
+    try:
+        res = es_client.search(index=INDEX_NAME, body=rrf_query)
+    except RequestError as e:
+        # Captura errores específicos de la petición a Elasticsearch.
+        logger.error(f"Error en la consulta a Elasticsearch: {e}")
+        raise Exception(f"Error en la búsqueda: {e.info.get('error', {}).get('reason', 'Desconocido')}")
+    except Exception as e:
+        # Captura cualquier otro error inesperado.
+        logger.error(f"Error inesperado en la búsqueda: {e}")
+        raise Exception(f"Error inesperado: {str(e)}")
+
+    # 6. Procesar los resultados.
+    # Extrae la lista de "hits" de la respuesta.
+    hits = res.body["hits"]["hits"] if hasattr(res, 'body') else res["hits"]["hits"]
+    # Filtra los resultados para asegurar que contienen el campo de texto principal.
+    filtered_hits = [hit for hit in hits if hit["_source"].get(TEXT_FIELD)]
+
+    # Verificación adicional para filtros
+    if (dataset_ids or document_ids) and debug:
+        # Comprobamos cuántos documentos cumplen estrictamente con los filtros
+        strict_count = 0
+        for hit in filtered_hits:
+            passes_kb_filter = not dataset_ids or hit["_source"].get("kb_id") in dataset_ids
+            passes_doc_filter = not document_ids or hit["_source"].get("docnm_kwd") in document_ids
+            
+            if passes_kb_filter and passes_doc_filter:
+                strict_count += 1
+        
+        logger.debug(f"De {len(filtered_hits)} resultados, {strict_count} cumplen estrictamente con los filtros")
+    
+    # Si el modo debug está activado, informa cuántos resultados se obtuvieron.
+    if debug:
+        logger.debug(f"Resultados obtenidos: {len(filtered_hits)} hits")
+
+    return filtered_hits
+
+def text_only_search_escloud(query, k=30, dataset_ids=None, document_ids=None, debug=False):
+    """
+    Realiza una búsqueda solo de texto (BM25) en Elasticsearch Cloud.
+    Esta función es útil cuando no se requiere la búsqueda por similitud vectorial.
+    
+    Args:
+        query (str): El texto de la consulta.
+        k (int): El número de resultados a devolver.
+        dataset_ids (list, optional): IDs de "datasets" para filtrar.
+        document_ids (list, optional): IDs de documentos para filtrar.
+        debug (bool, optional): Activa logs de depuración.
+    
+    Returns:
+        list: Una lista de "hits" ordenados por relevancia (puntuación BM25).
+    """
+    # 1. Configurar los filtros, igual que en la búsqueda híbrida.
+    must_filters = []
+    if dataset_ids:
+        must_filters.append({"terms": {"kb_id": dataset_ids}})
+    if document_ids:
+        must_filters.append({"terms": {"docnm_kwd": document_ids}})
+
+    # 2. Construir la consulta de búsqueda de texto.
+    es_query = {
+        "bool": {
+            "should": [
+                # La cláusula "should" indica una preferencia. Aquí, buscamos el texto en el campo principal.
+                # `boost: 2` le da más importancia a los aciertos en este campo.
+                {"multi_match": {"query": query, "fields": [TEXT_FIELD], "boost": 2}}
+            ],
+            # `minimum_should_match: 1` requiere que al menos una de las cláusulas "should" coincida.
+            "minimum_should_match": 1,
+            # `must` requiere que todas las condiciones (filtros) se cumplan.
+            "must": must_filters if must_filters else []
+        }
+    }
+    # Cuerpo completo de la petición a Elasticsearch.
+    body = {
+        "size": k,  # Limita el número de resultados.
+        "query": es_query
+    }
+
+    # Si el modo debug está activado, imprime la consulta.
+    if debug:
+        logger.debug(f"Consulta de texto: {json.dumps(body, indent=2)}")
+
+    # 3. Ejecutar la consulta.
+    try:
+        res = es_client.search(index=INDEX_NAME, body=body)
+    except RequestError as e:
+        logger.error(f"Error en la consulta a Elasticsearch: {e}")
+        raise Exception(f"Error en la búsqueda: {e.info.get('error', {}).get('reason', 'Desconocido')}")
+    except Exception as e:
+        logger.error(f"Error inesperado en la búsqueda: {e}")
+        raise Exception(f"Error inesperado: {str(e)}")
+
+    # 4. Procesar los resultados.
+    hits = res.body["hits"]["hits"] if hasattr(res, 'body') else res["hits"]["hits"]
+    filtered_hits = [hit for hit in hits if hit["_source"].get(TEXT_FIELD)]
+
+    if debug:
+        logger.debug(f"Resultados obtenidos: {len(filtered_hits)} hits")
+
+    return filtered_hits
