@@ -1,32 +1,32 @@
-name: Backend CD
+name: Frontend CD
 
 on:
   push:
     branches: [main]
     paths:
-      - "backend/**"
-      - ".github/workflows/backend-cd.yml"
+      - "frontend/**"
+      - ".github/workflows/frontend-cd.yml"
 
 permissions:
   contents: read
   id-token: write
 
 concurrency:
-  group: backend-cd-main
+  group: frontend-cd-main
   cancel-in-progress: true
 
 env:
-  IMAGE_NAME: memorias975-backend
+  IMAGE_NAME: memorias975-frontend
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
   build-push-deploy:
-    name: Build, Push and Deploy Backend
+    name: Build, Push and Deploy Frontend
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: ./backend
+        working-directory: ./frontend
 
     steps:
       - name: Checkout repository
@@ -58,6 +58,6 @@ jobs:
         uses: azure/container-apps-deploy-action@v1
         with:
           resourceGroup: ${{ vars.AZURE_RESOURCE_GROUP }}
-          containerAppName: ${{ vars.BACKEND_CONTAINER_APP_NAME }}
+          containerAppName: ${{ vars.FRONTEND_CONTAINER_APP_NAME }}
           imageToDeploy: ${{ vars.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           acrName: ${{ vars.ACR_NAME }}
