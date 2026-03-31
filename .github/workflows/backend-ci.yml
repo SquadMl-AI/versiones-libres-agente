@@ -21,8 +21,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-test-sonar:
-    name: Lint, Test, Coverage, SonarQube
+  lint-test:
+    name: Lint and Test
     runs-on: ubuntu-latest
 
     defaults:
@@ -63,12 +63,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements-dev.txt ]; then
-            pip install -r requirements-dev.txt
-          else
-            pip install -r requirements.txt
-            pip install flake8 pytest pytest-cov
-          fi
+          pip install -r requirements-dev.txt
 
       - name: Run flake8
         run: |
@@ -80,7 +75,7 @@ jobs:
           pytest -q --cov=. --cov-report=xml --cov-report=term-missing
 
       - name: SonarQube Scan
-        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_HOST_URL != '' }}
+        if: ${{ secrets.SONAR_TOKEN != '' && vars.SONAR_HOST_URL != '' }}
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
