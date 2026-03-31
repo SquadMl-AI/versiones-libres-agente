@@ -21,7 +21,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-test: 
+  lint-test:
     name: Lint and Test
     runs-on: ubuntu-latest
 
@@ -44,6 +44,8 @@ jobs:
       ELASTICSEARCH_USER: "test"
       ELASTICSEARCH_PASSWORD: "test"
       SECRET_KEY: "test-secret"
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
 
     steps:
       - name: Checkout repository
@@ -63,7 +65,14 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements-dev.txt
+          if [ -f requirements-dev.txt ]; then
+            pip install -r requirements-dev.txt
+          elif [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+            pip install flake8 pytest pytest-cov
+          else
+            pip install flake8 pytest pytest-cov
+          fi
 
       - name: Run flake8
         run: |
@@ -75,11 +84,11 @@ jobs:
           pytest -q --cov=. --cov-report=xml --cov-report=term-missing
 
       - name: SonarQube Scan
-        if: ${{ secrets.SONAR_TOKEN != '' && vars.SONAR_HOST_URL != '' }}
+        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_HOST_URL != '' }}
         uses: SonarSource/sonarqube-scan-action@v6
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
         with:
           projectBaseDir: ./backend
           args: >
