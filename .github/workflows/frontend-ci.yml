@@ -57,14 +57,15 @@ jobs:
         run: npm run build --if-present
 
       - name: SonarQube Scan
+        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_HOST_URL != '' }}
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
         with:
-          projectBaseDir: frontend
+          projectBaseDir: ./frontend
           args: >
             -Dsonar.projectKey=memorias975-frontend
             -Dsonar.projectName=memorias975-frontend
             -Dsonar.sources=.
-            -Dsonar.exclusions=**/node_modules/**,**/.next/**,**/dist/**
+            -Dsonar.exclusions=**/node_modules/**,**/.next/**,**/dist/**,**/coverage/**
