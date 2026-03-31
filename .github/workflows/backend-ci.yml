@@ -44,8 +44,6 @@ jobs:
       ELASTICSEARCH_USER: "test"
       ELASTICSEARCH_PASSWORD: "test"
       SECRET_KEY: "test-secret"
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
 
     steps:
       - name: Checkout repository
@@ -83,12 +81,36 @@ jobs:
         run: |
           pytest -q --cov=. --cov-report=xml --cov-report=term-missing
 
+      - name: Validate Sonar configuration
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+        run: |
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "SONAR_TOKEN is missing"
+            exit 1
+          fi
+
+          if [ -z "$SONAR_HOST_URL" ]; then
+            echo "SONAR_HOST_URL is missing"
+            exit 1
+          fi
+
+          case "$SONAR_HOST_URL" in
+            http://*|https://*)
+              echo "SONAR_HOST_URL format looks valid"
+              ;;
+            *)
+              echo "SONAR_HOST_URL must start with http:// or https://"
+              exit 1
+              ;;
+          esac
+
       - name: SonarQube Scan
-        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_HOST_URL != '' }}
         uses: SonarSource/sonarqube-scan-action@v6
         env:
-          SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
         with:
           projectBaseDir: ./backend
           args: >
