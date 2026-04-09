@@ -58,3 +58,4 @@ jobs:
           containerAppName: ${{ vars.ACA_NAME }}
           imageToDeploy: ${{ vars.ACR_NAME }}.azurecr.io/backend:${{ github.sha }}
           acrName: ${{ vars.ACR_NAME }}
+          
