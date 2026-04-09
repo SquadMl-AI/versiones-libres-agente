@@ -19,27 +19,12 @@ jobs:
   lint-test:
     name: Lint and Test
     runs-on: ubuntu-latest
+    # Usamos el entorno de desarrollo para validar los tests con sus variables
+    environment: env_dev
 
     defaults:
       run:
         working-directory: ./backend
-
-    # Variables ficticias para entorno de pruebas
-    env:
-      AZURE_BLOB_STORAGE_CONNECTION_STRING: "test"
-      AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT: "https://test"
-      AZURE_OPENAI_ENDPOINT: "https://test"
-      POSTGRES_HOST: "localhost"
-      POSTGRES_PORT: "5432"
-      POSTGRES_DB: "test_db"
-      POSTGRES_USER: "test_user"
-      POSTGRES_PASSWORD: "test_password"
-      COSMOS_DB_ENDPOINT: "https://test-cosmos.documents.azure.com:443/"
-      COSMOS_DB_KEY: "test"
-      ELASTICSEARCH_HOST: "http://localhost:9200"
-      ELASTICSEARCH_USER: "test"
-      ELASTICSEARCH_PASSWORD: "test"
-      SECRET_KEY: "test-secret"
 
     steps:
       - name: Checkout repository
