@@ -1,19 +1,23 @@
-import os
-import sys
 import json
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from pathlib import Path
 
 from utils.indexing_pipeline import DocumentProcessingPipeline
 
 pipeline = DocumentProcessingPipeline()
 
-# Obtener lista identificadores de los documentos segun el bloque
-with open('../../kb_id_to_name.json', 'r', encoding='utf-8') as archivo:
-    kb_ids= json.load(archivo)
+# Obtener lista identificadores de los documentos según el bloque
+BASE_DIR = Path(__file__).resolve().parent
+kb_ids_path = (BASE_DIR / "../../kb_id_to_name.json").resolve()
+
+with kb_ids_path.open("r", encoding="utf-8") as archivo:
+    kb_ids = json.load(archivo)
 
 # Procesar documento
-knowledge_base = pipeline.document_processing_indexing_orchestrator(kb_ids=kb_ids, index_name='index_sentencias')
+knowledge_base = pipeline.document_processing_indexing_orchestrator(
+    kb_ids=kb_ids,
+    index_name="index_sentencias",
+)
 
-with open("pdfembeddings2_pruebas_data.json", "w", encoding="utf-8") as f:
+output_path = BASE_DIR / "pdfembeddings2_pruebas_data.json"
+with output_path.open("w", encoding="utf-8") as f:
     json.dump(knowledge_base, f, indent=4, ensure_ascii=False)

@@ -4,6 +4,7 @@ from app.services.dashboard_service import get_dashboard_metrics
 
 router = APIRouter()
 
+
 @router.get("/metrics", tags=["dashboard"])
 def dashboard_metrics():
     """

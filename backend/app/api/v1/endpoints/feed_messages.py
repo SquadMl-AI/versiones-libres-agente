@@ -24,10 +24,12 @@ cosmos = AzureServices.CosmosDB(
     collection_names=collection
 )
 
+
 # Definimos el modelo para la retroalimentación de mensajes
 class MessagesFeedback(BaseModel):
     message_id: str  # ID del mensaje
     feed: int  # Valor de retroalimentación
+
 
 @router.put("/feed_message")
 def feed_message(request: MessagesFeedback):
