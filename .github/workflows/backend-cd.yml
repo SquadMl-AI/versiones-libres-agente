@@ -2,7 +2,7 @@ name: Backend CD
 
 on:
   push:
-    branches: [main]
+    branches: [develop, main]
     paths:
       - "backend/**"
       - ".github/workflows/backend-cd.yml"
@@ -12,17 +12,15 @@ permissions:
   id-token: write
 
 concurrency:
-  group: backend-cd-main
+  group: backend-cd-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  IMAGE_NAME: memorias975-backend
-  IMAGE_TAG: ${{ github.sha }}
-
 jobs:
-  build-push-deploy:
-    name: Build, Push and Deploy Backend
+  deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
+    # Selección dinámica del entorno según la rama
+    environment: ${{ github.ref_name == 'main' && 'env_prod' || 'env_dev' }}
 
     defaults:
       run:
@@ -32,32 +30,32 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Azure Login (OIDC)
+      - name: Azure Login
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
 
       - name: Log in to Azure Container Registry
-        run: az acr login --name ${{ vars.ACR_NAME }}
+        # Usamos ACA_NAME que debe estar en los 'Variables' del entorno
+        run: az acr login --name ${{ vars.ACA_NAME }}
 
-      - name: Build Docker image
+      - name: Build and Push Docker image
         run: |
-          docker build \
-            -t ${{ vars.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
-            -t ${{ vars.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest \
-            .
-
-      - name: Push Docker image
-        run: |
-          docker push ${{ vars.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          docker push ${{ vars.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
-
+          # Imagen dinámica basada en el SHA del commit
+          IMAGE_PATH="${{ vars.ACR_NAME }}/memorias975-backend:${{ github.sha }}"
+          
+          # Construimos usando el hash del commit para mantener trazabilidad
+          docker build -t ${{ vars.ACR_NAME }}.azurecr.io/backend:${{ github.sha }} .
+          docker push ${{ vars.ACR_NAME }}.azurecr.io/backend:${{ github.sha }}
+          
       - name: Deploy to Azure Container App
         uses: azure/container-apps-deploy-action@v1
         with:
-          resourceGroup: ${{ vars.AZURE_RESOURCE_GROUP }}
-          containerAppName: ${{ vars.BACKEND_CONTAINER_APP_NAME }}
-          imageToDeploy: ${{ vars.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          resourceGroup: ${{ vars.RESOURCE_GROUP }}
+          containerAppName: ${{ vars.ACA_NAME }}
+          imageToDeploy: ${{ vars.ACR_NAME }}.azurecr.io/backend:${{ github.sha }}
           acrName: ${{ vars.ACR_NAME }}
+          

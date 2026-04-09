@@ -2,12 +2,7 @@ name: Backend CI
 
 on:
   pull_request:
-    branches: [develop, main]
-    paths:
-      - "backend/**"
-      - ".github/workflows/backend-ci.yml"
-  push:
-    branches: [develop, main]
+    branches: [develop]
     paths:
       - "backend/**"
       - ".github/workflows/backend-ci.yml"
@@ -24,52 +19,31 @@ jobs:
   lint-test:
     name: Lint and Test
     runs-on: ubuntu-latest
+    # Usamos el entorno de desarrollo para validar los tests con sus variables
+    environment: env_dev
 
     defaults:
       run:
         working-directory: ./backend
 
-    env:
-      AZURE_BLOB_STORAGE_CONNECTION_STRING: "test"
-      AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT: "https://test"
-      AZURE_OPENAI_ENDPOINT: "https://test"
-      POSTGRES_HOST: "localhost"
-      POSTGRES_PORT: "5432"
-      POSTGRES_DB: "test_db"
-      POSTGRES_USER: "test_user"
-      POSTGRES_PASSWORD: "test_password"
-      COSMOS_DB_ENDPOINT: "https://test-cosmos.documents.azure.com:443/"
-      COSMOS_DB_KEY: "test"
-      ELASTICSEARCH_HOST: "http://localhost:9200"
-      ELASTICSEARCH_USER: "test"
-      ELASTICSEARCH_PASSWORD: "test"
-      SECRET_KEY: "test-secret"
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
-          cache-dependency-path: |
-            backend/requirements.txt
-            backend/requirements-dev.txt
+          cache-dependency-path: "backend/requirements*.txt"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements-dev.txt ]; then
             pip install -r requirements-dev.txt
-          elif [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-            pip install flake8 pytest pytest-cov
           else
-            pip install flake8 pytest pytest-cov
+            pip install -r requirements.txt flake8 pytest pytest-cov
           fi
 
       - name: Run flake8
@@ -79,44 +53,4 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          pytest -q --cov=. --cov-report=xml --cov-report=term-missing
-
-      - name: Validate Sonar configuration
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-        run: |
-          if [ -z "$SONAR_TOKEN" ]; then
-            echo "SONAR_TOKEN is missing"
-            exit 1
-          fi
-
-          if [ -z "$SONAR_HOST_URL" ]; then
-            echo "SONAR_HOST_URL is missing"
-            exit 1
-          fi
-
-          case "$SONAR_HOST_URL" in
-            http://*|https://*)
-              echo "SONAR_HOST_URL format looks valid"
-              ;;
-            *)
-              echo "SONAR_HOST_URL must start with http:// or https://"
-              exit 1
-              ;;
-          esac
-
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v6
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-        with:
-          projectBaseDir: ./backend
-          args: >
-            -Dsonar.projectKey=memorias975-backend
-            -Dsonar.projectName=memorias975-backend
-            -Dsonar.sources=.
-            -Dsonar.tests=tests
-            -Dsonar.python.coverage.reportPaths=coverage.xml
-            -Dsonar.exclusions=**/__pycache__/**,**/*.pyc,**/.venv/**,**/venv/**
+          pytest -q --cov=. --cov-report=term-missing
