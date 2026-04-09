@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Proyecto Memorias 975 – Documentación General
 
 ## Descripción
@@ -103,4 +102,3 @@ Esto levanta la app en http://localhost:5556
 Para dudas o contribuciones, consulta la documentación interna o contacta al equipo de desarrollo.
 =======
 # versiones-libres-agente
->>>>>>> 8582da317482a687775f730c76cf572af14176ac
