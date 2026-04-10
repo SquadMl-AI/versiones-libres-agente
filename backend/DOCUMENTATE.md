@@ -430,3 +430,4 @@ GET    /api/v1/dashboard/*     → Métricas y estadísticas
 
 **Última actualización**: Febrero 2026
 **Versión**: 1.0
+
