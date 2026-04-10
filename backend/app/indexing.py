@@ -1,8 +1,8 @@
-from langchain_experimental.text_splitter import SemanticChunker
-from dotenv import load_dotenv, find_dotenv
-from services.ai_services import AzureServices
 import pdb
 
+from dotenv import find_dotenv, load_dotenv
+from langchain_experimental.text_splitter import SemanticChunker
+from services.ai_services import AzureServices
 
 # Cargar variables de entorno (asegúrate que el .env tenga las de Azure)
 load_dotenv(find_dotenv())
@@ -41,9 +41,8 @@ def main():
     chunks = splitter.split_text(texto)
 
     for idx, chunk in enumerate(chunks):
-        print(f"--- Chunk {idx+1} ---")
+        print(f"--- Chunk {idx + 1} ---")
         print(chunk)
-        print()
 
     # # 3. Chunkear el texto
     # chunks = chunk_text(texto, chunk_size=1000, chunk_overlap=100)

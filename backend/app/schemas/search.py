@@ -1,33 +1,33 @@
 # app/schemas/search.py
+
 from pydantic import BaseModel
-from typing import List, Optional
 
 
 class SearchResult(BaseModel):
     id: str
     title: str
     content: str
-    collection: Optional[str] = None
-    document: Optional[str] = None
-    page: Optional[str] = None
-    score: Optional[float] = None
-    relevance: Optional[str] = "Relevante"
-    llm_summary: Optional[str] = None  # Nuevo campo para mostrar el resumen LLM
+    collection: str | None = None
+    document: str | None = None
+    page: str | None = None
+    score: float | None = None
+    relevance: str | None = "Relevante"
+    llm_summary: str | None = None  # Nuevo campo para mostrar el resumen LLM
 
 
 class SearchResponse(BaseModel):
-    results: List[SearchResult]
-    graph: Optional[dict] = None  # Siempre incluir el campo graph
-    aggregations: Optional[dict] = None  # Agregaciones/facetas de Elastic
+    results: list[SearchResult]
+    graph: dict | None = None  # Siempre incluir el campo graph
+    aggregations: dict | None = None  # Agregaciones/facetas de Elastic
 
 
 # --- Para síntesis final ---
 class SynthesisRequest(BaseModel):
     query: str
     llm_model: str
-    results: List[SearchResult]
-    relevance_categories: Optional[List[str]] = ["Relevante"]
-    user_email: Optional[str] = None
+    results: list[SearchResult]
+    relevance_categories: list[str] | None = ["Relevante"]
+    user_email: str | None = None
 
 
 class SynthesisResponse(BaseModel):
@@ -37,38 +37,38 @@ class SynthesisResponse(BaseModel):
 class FeedbackRequest(BaseModel):
     # Identificación y sesión
     user_email: str
-    session_id: Optional[str] = None
-    ip_address: Optional[str] = None
+    session_id: str | None = None
+    ip_address: str | None = None
 
     # Consulta y contexto
     query: str
-    model_name_relevance: Optional[str] = None
-    model_name_synthesis: Optional[str] = None
-    relevance_filtered_collections: Optional[str] = None
-    relevance_filtered_collections_flag: Optional[int] = None
-    relevance_filtered_documents: Optional[str] = None
-    relevance_filtered_documents_flag: Optional[int] = None
+    model_name_relevance: str | None = None
+    model_name_synthesis: str | None = None
+    relevance_filtered_collections: str | None = None
+    relevance_filtered_collections_flag: int | None = None
+    relevance_filtered_documents: str | None = None
+    relevance_filtered_documents_flag: int | None = None
 
     # Feedback de grafo
-    graph_feedback: Optional[int] = None
-    graph_feedback_comment: Optional[str] = None
+    graph_feedback: int | None = None
+    graph_feedback_comment: str | None = None
 
     # Análisis de relevancia/grafo
-    relevance_analysis: Optional[list] = None
-    relevance_chunks_used: Optional[int] = None
+    relevance_analysis: list | None = None
+    relevance_chunks_used: int | None = None
 
     # Síntesis y feedback
-    synthesis: Optional[str] = None
-    synthesis_length_words: Optional[int] = None
-    synthesis_length_chars: Optional[int] = None
-    synthesis_feedback: Optional[int] = None
-    synthesis_feedback_comment: Optional[str] = None
+    synthesis: str | None = None
+    synthesis_length_words: int | None = None
+    synthesis_length_chars: int | None = None
+    synthesis_feedback: int | None = None
+    synthesis_feedback_comment: str | None = None
 
     # Feedback general y metadatos
-    rating: Optional[int] = None
-    comment: Optional[str] = None
+    rating: int | None = None
+    comment: str | None = None
     contar: int = 1
-    feedback_type: Optional[str] = None
-    source: Optional[str] = None
-    client_version: Optional[str] = None
-    has_feedback: Optional[bool] = None  # Nuevo campo: indica si la interacción tiene feedback explícito
+    feedback_type: str | None = None
+    source: str | None = None
+    client_version: str | None = None
+    has_feedback: bool | None = None  # Nuevo campo: indica si la interacción tiene feedback explícito

@@ -1,0 +1,51 @@
+# ──────────────────────────────────────────────
+# Configuración de Ruff – Backend Memorias 975
+# ──────────────────────────────────────────────
+# Docs: https://docs.astral.sh/ruff/configuration/
+
+target-version = "py311"
+line-length = 120
+
+# Archivos y carpetas que Ruff debe ignorar
+exclude = [
+    "__pycache__",
+    ".venv",
+    "venv",
+    "*.ipynb",
+    "migrations",
+]
+
+# ── Reglas de Lint ──────────────────────────────
+[lint]
+select = [
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "F",     # pyflakes (imports no usados, variables, etc.)
+    "I",     # isort (orden de imports)
+    "UP",    # pyupgrade (modernizar sintaxis a Python 3.11+)
+    "B",     # flake8-bugbear (errores comunes / code smells)
+    "SIM",   # flake8-simplify (simplificaciones de código)
+    "S",     # bandit (seguridad básica)
+]
+
+ignore = [
+    "S101",  # Permitir uso de assert (común en tests)
+    "E501",  # Ignorar longitud de línea (ya controlada por formatter)
+    "B008",  # Permitir llamadas a funciones en argumentos por defecto (FastAPI Depends)
+]
+
+# ── Reglas por archivo ──────────────────────────
+[lint.per-file-ignores]
+# En archivos __init__.py es normal tener imports sin usar
+"__init__.py" = ["F401"]
+# En scripts de test se permite assert y prints
+"tests/**" = ["S101", "S105", "S106"]
+
+# ── Configuración de isort ──────────────────────
+[lint.isort]
+known-first-party = ["app"]
+
+# ── Formato ─────────────────────────────────────
+[format]
+quote-style = "double"
+indent-style = "space"

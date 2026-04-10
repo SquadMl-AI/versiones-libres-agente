@@ -1,40 +1,36 @@
 # --------- Importar Azure Search SDK -----------------------------------------------------------------
-from azure.search.documents.indexes import SearchIndexClient
+import hashlib
+import logging
+
+# --------- Importar dependencias adicionales ----------------------------------------------------------
+import os
+from datetime import UTC, datetime, timedelta
+
+import fitz
+import numpy as np
+import openai
+import pandas as pd
+
+# --------- Importar Azure Document Intelligence SDK --------------------------------------------------
+from azure.ai.formrecognizer import DocumentAnalysisClient
+from azure.core.credentials import AzureKeyCredential
+from azure.core.exceptions import ResourceNotFoundError
 from azure.search.documents import SearchClient
-from azure.search.documents.indexes.models import (
-    SearchIndex,
-    SearchField,
-    SemanticSearch
-)
+from azure.search.documents.indexes import SearchIndexClient
+from azure.search.documents.indexes.models import SearchField, SearchIndex, SemanticSearch
 from azure.search.documents.models import (
     QueryType,
     VectorizedQuery,
 )
-# --------- Importar Azure OpenAI SDK -----------------------------------------------------------------
-from langchain_openai import AzureOpenAIEmbeddings, AzureChatOpenAI
-
-# --------- Importar Azure Document Intelligence SDK --------------------------------------------------
-from azure.ai.formrecognizer import DocumentAnalysisClient
 
 # --------- Importar Azure Blob Storage SDK -----------------------------------------------------------
 from azure.storage.blob import BlobServiceClient
+from dotenv import find_dotenv, load_dotenv
 
-# --------- Importar dependencias adicionales ----------------------------------------------------------
-import os
-import openai
-from typing import Optional
-import logging
-import fitz
-from azure.core.exceptions import ResourceNotFoundError
-from azure.core.credentials import AzureKeyCredential
-import hashlib
-import numpy as np
-import pandas as pd
-from datetime import datetime, timezone, timedelta
-from typing import List, Tuple
+# --------- Importar Azure OpenAI SDK -----------------------------------------------------------------
+from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError
-from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
 
@@ -64,7 +60,7 @@ class AzureServices:
             """
             return BlobServiceClient.from_connection_string(self.connection_string)
 
-        def download_file(self, blob_path: str) -> Optional[bytes]:
+        def download_file(self, blob_path: str) -> bytes | None:
             """
             Descarga un archivo específico del blob storage.
 
@@ -114,9 +110,9 @@ class AzureServices:
                     return pdf.page_count
             except Exception as e:
                 logging.error(f"Error al contar páginas: {e}")
-                return float('inf')
+                return float("inf")
 
-        def list_blobs_by_page_count(self, prefix: str = "", suffix: str = "pdf") -> List[Tuple[str, int]]:
+        def list_blobs_by_page_count(self, prefix: str = "", suffix: str = "pdf") -> list[tuple[str, int]]:
             """
             Lista los blobs ordenados por número de páginas de menor a mayor.
             :return: Lista de tuplas (blob_name, num_paginas), ordenadas por num_paginas.
@@ -144,13 +140,17 @@ class AzureServices:
             self.endpoint = os.getenv("AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT")
             self.api_key = os.getenv("AZURE_DOCUMENT_INTELLIGENCE_API_KEY")
             self.document_analysis_client = DocumentAnalysisClient(
-                endpoint=self.endpoint,
-                credential=AzureKeyCredential(self.api_key)
+                endpoint=self.endpoint, credential=AzureKeyCredential(self.api_key)
             )
 
-        def extract_doc_text(self, model: str = "prebuilt-layout", file_obj: bytes = None,
-                             file_path: str = None, batch_size: int = 2000,
-                             return_tables: bool = True):
+        def extract_doc_text(
+            self,
+            model: str = "prebuilt-layout",
+            file_obj: bytes = None,
+            file_path: str = None,
+            batch_size: int = 2000,
+            return_tables: bool = True,
+        ):
             if file_obj is not None:
                 pdf_doc = fitz.open(stream=file_obj, filetype="pdf")
             elif file_path is not None:
@@ -170,18 +170,16 @@ class AzureServices:
                 batch_bytes = temp_pdf.tobytes()
                 temp_pdf.close()
 
-                print(f"Procesando páginas {start}-{end-1} | Tamaño del batch: "
-                      f"{len(batch_bytes) / 1024 / 1024:.2f} MB")
+                print(
+                    f"Procesando páginas {start}-{end - 1} | Tamaño del batch: {len(batch_bytes) / 1024 / 1024:.2f} MB"
+                )
 
                 try:
-                    poller = self.document_analysis_client.begin_analyze_document(
-                        model,
-                        document=batch_bytes
-                    )
+                    poller = self.document_analysis_client.begin_analyze_document(model, document=batch_bytes)
                     result = poller.result(timeout=600)
                     last_result = result
                 except Exception as e:
-                    print(f"Error procesando páginas {start}-{end-1}: {e}")
+                    print(f"Error procesando páginas {start}-{end - 1}: {e}")
                     continue
 
                 for batch_page_index, page in enumerate(result.pages):
@@ -219,7 +217,7 @@ class AzureServices:
                 if tb.shape[0] < min_rows or tb.shape[1] < min_cols:
                     continue
 
-                if tb.apply(lambda x: x.str.strip()).replace('', np.nan).isnull().all().all():
+                if tb.apply(lambda x: x.str.strip()).replace("", np.nan).isnull().all().all():
                     continue
 
                 html_table = tb.to_html(index=False)
@@ -268,12 +266,10 @@ class AzureServices:
                 azure_endpoint=self.endpoint,
                 api_key=self.api_key,
                 api_version=self.model_chat_api_version_41,
-                temperature=0.4
+                temperature=0.4,
             )
 
-            self.models = {
-                "gpt-41": self.llm_4
-            }
+            self.models = {"gpt-41": self.llm_4}
 
         def load_model(self, model_name: str):
             try:
@@ -296,10 +292,8 @@ class AzureServices:
             """
             df = pd.DataFrame(docs)
             for col_name, col_name_embeddings in columns.items():
-                df[col_name_embeddings] = df[col_name].apply(
-                    lambda x: self.client_embeddings.embed_query(x)
-                )
-            return df.to_dict(orient='records')
+                df[col_name_embeddings] = df[col_name].apply(lambda x: self.client_embeddings.embed_query(x))
+            return df.to_dict(orient="records")
 
         def get_embedding(self, text: str) -> list[float]:
             """
@@ -311,14 +305,12 @@ class AzureServices:
             Returns:
                 list[float]: La representación vectorial del texto.
             """
-            embedding = self.openai_client.embeddings.create(
-                input=[text], model=self.model_embedding
-            ).data[0].embedding
+            embedding = self.openai_client.embeddings.create(input=[text], model=self.model_embedding).data[0].embedding
             return embedding
 
-        def model_response_with_history(self, query: str, system_prompt: str,
-                                        history_msg: list[dict] = [],
-                                        response_format: dict = None) -> tuple[str, str]:
+        def model_response_with_history(
+            self, query: str, system_prompt: str, history_msg: list[dict] = None, response_format: dict = None
+        ) -> tuple[str, str]:
             """
             Genera una respuesta basada en el prompt proporcionado utilizando el asistente GPT
             de Azure OpenAI.
@@ -344,12 +336,7 @@ class AzureServices:
             print("Messages:", messages)
             print("🤖 Generando respuesta con el modelo de lenguaje...")
             model = self.model_chat_41
-            params = {
-                "model": model,
-                "messages": messages,
-                "temperature": 0.1,
-                "max_tokens": 25000
-            }
+            params = {"model": model, "messages": messages, "temperature": 0.1, "max_tokens": 25000}
             if response_format is not None:
                 params["response_format"] = response_format
 
@@ -357,9 +344,9 @@ class AzureServices:
 
             return response.choices[0].message.content, model
 
-        def model_response(self, query: str, system_prompt: str,
-                           response_format: str = None,
-                           model: str = "gpt-4.1") -> tuple[str, str]:
+        def model_response(
+            self, query: str, system_prompt: str, response_format: str = None, model: str = "gpt-4.1"
+        ) -> tuple[str, str]:
             """
             Genera una respuesta basada en el prompt proporcionado utilizando el asistente GPT
             de Azure OpenAI.
@@ -386,12 +373,9 @@ class AzureServices:
             print(f"Ejecución usando el modelo: {model}")
             params = {
                 "model": model,
-                "messages": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": query}
-                ],
+                "messages": [{"role": "system", "content": system_prompt}, {"role": "user", "content": query}],
                 "temperature": 0.1,
-                "max_tokens": 25000
+                "max_tokens": 25000,
             }
             if response_format is not None:
                 params["response_format"] = response_format
@@ -401,7 +385,7 @@ class AzureServices:
             return response.choices[0].message.content, model
 
     class CosmosDB:
-        """ Clase para gestionar la conexión y operaciones con Azure Cosmos DB utilizando MongoDB API."""
+        """Clase para gestionar la conexión y operaciones con Azure Cosmos DB utilizando MongoDB API."""
 
         def __init__(self, connection_string, db_name, collection_names):
             try:
@@ -415,13 +399,10 @@ class AzureServices:
                 self.db = self._create_database_and_collections()
             except ServerSelectionTimeoutError as e:
                 logging.exception("Error al conectar con la base de datos: %s", str(e))
-                raise TimeoutError(
-                    "No se pudo establecer la conexión con la base de datos. "
-                    "Revisa la cadena de conexión y la disponibilidad del servidor."
-                )
+                raise
             except KeyError as e:
                 logging.exception("Error al acceder a la colección 'Users': %s", str(e))
-                raise KeyError("La colección 'Users' no existe en la base de datos.")
+                raise
             except Exception as e:
                 logging.exception("Error inesperado durante la inicialización de CosmosDBClient: %s", str(e))
                 raise
@@ -433,9 +414,7 @@ class AzureServices:
                 return client
             except ServerSelectionTimeoutError:
                 logging.exception("Invalid API for MongoDB connection string or timed out when attempting to connect.")
-                raise TimeoutError(
-                    "Invalid API for MongoDB connection string or timed out when attempting to connect"
-                )
+                raise
 
         def _create_database_and_collections(self):
             try:
@@ -491,14 +470,11 @@ class AzureServices:
 
         def get_messages_by_user_and_time(self, user_id: str, collection_name: str):
             try:
-                now = datetime.now(timezone.utc)
+                now = datetime.now(UTC)
                 two_hours_ago = now - timedelta(hours=2)
 
                 messages = list(
-                    self.db[collection_name].find({
-                        "user_id": user_id,
-                        "timestamp": {"$gte": two_hours_ago}
-                    })
+                    self.db[collection_name].find({"user_id": user_id, "timestamp": {"$gte": two_hours_ago}})
                 )
                 for m in messages:
                     m["_id"] = str(m["_id"])
@@ -526,9 +502,7 @@ class AzureServices:
         def update_users_field(self, doc: dict, collection_name: str):
             try:
                 result = self.db[collection_name].update_one(
-                    {"_id": doc["_id"]},
-                    {"$set": {"users": doc["users"]}},
-                    upsert=True
+                    {"_id": doc["_id"]}, {"$set": {"users": doc["users"]}}, upsert=True
                 )
                 return result.modified_count
             except Exception as e:
@@ -572,10 +546,7 @@ class AzureServices:
             self.model_name_oai = os.getenv("AZURE_OPENAI_EMBEDDING_MODEL")
             self.api_version_oai = os.getenv("AZURE_OPENAI_EMBEDDING_API_VERSION")
 
-            self.index_client = SearchIndexClient(
-                endpoint=self.endpoint,
-                credential=AzureKeyCredential(self.api_key)
-            )
+            self.index_client = SearchIndexClient(endpoint=self.endpoint, credential=AzureKeyCredential(self.api_key))
 
         def consistent_encode(self, input_string: str) -> str:
             """
@@ -590,8 +561,9 @@ class AzureServices:
             encoded = hashlib.sha256(input_string.encode()).hexdigest()
             return encoded
 
-        def create_index(self, index_name: str, fields: List[SearchField],
-                         vector_search=None, semantic_config=None) -> SearchIndex:
+        def create_index(
+            self, index_name: str, fields: list[SearchField], vector_search=None, semantic_config=None
+        ) -> SearchIndex:
             """
             Crea un índice en Azure Search con opciones avanzadas.
 
@@ -607,23 +579,20 @@ class AzureServices:
             try:
                 existing_indexes = [index.name for index in self.index_client.list_indexes()]
                 if index_name in existing_indexes:
-                    print('----------------------------------------------------------------')
+                    print("----------------------------------------------------------------")
                     print(f"El índice '{index_name}' ya existe. No se creará un nuevo índice.")
-                    print('----------------------------------------------------------------')
+                    print("----------------------------------------------------------------")
                     return None
 
-                print('----------------------------------------------------------------')
+                print("----------------------------------------------------------------")
                 print(f"Creando el índice '{index_name}'...")
                 semantic_search = SemanticSearch(configurations=semantic_config)
                 index = SearchIndex(
-                    name=index_name,
-                    fields=fields,
-                    vector_search=vector_search,
-                    semantic_search=semantic_search
+                    name=index_name, fields=fields, vector_search=vector_search, semantic_search=semantic_search
                 )
 
                 result = self.index_client.create_or_update_index(index)
-                print('----------------------------------------------------------------')
+                print("----------------------------------------------------------------")
                 print(f"Índice '{index_name}' creado exitosamente.")
                 return result
             except Exception as e:
@@ -642,24 +611,23 @@ class AzureServices:
                 None: La función no retorna ningún valor, pero carga los documentos en el índice.
             """
             self.search_client_upload = SearchClient(
-                endpoint=self.endpoint,
-                index_name=index_name,
-                credential=AzureKeyCredential(self.api_key)
+                endpoint=self.endpoint, index_name=index_name, credential=AzureKeyCredential(self.api_key)
             )
             batch_size = 950
             total_docs = len(documents)
             print(f"Subiendo {total_docs} documentos al índice {index_name} (batch size={batch_size})")
 
             for i in range(0, total_docs, batch_size):
-                batch = documents[i:i + batch_size]
+                batch = documents[i : i + batch_size]
                 print(f"Subiendo documentos {i + 1} a {i + len(batch)}...")
                 try:
                     self.search_client_upload.upload_documents(documents=batch)
                 except Exception as e:
                     print(f"Error al subir documentos {i + 1} a {i + len(batch)}: {str(e)}")
 
-        def hybrid_search(self, query: str, index_name: str, top_k: int = 5,
-                          odata_filter: Optional[str] = None) -> list[dict]:
+        def hybrid_search(
+            self, query: str, index_name: str, top_k: int = 5, odata_filter: str | None = None
+        ) -> list[dict]:
             """
             Realiza una búsqueda híbrida (vector + texto) con reclasificación semántica.
 
@@ -673,18 +641,14 @@ class AzureServices:
                 list[str]: Una lista de los fragmentos de contenido más relevantes.
             """
             search_client = SearchClient(
-                endpoint=self.endpoint,
-                index_name=index_name,
-                credential=AzureKeyCredential(self.api_key)
+                endpoint=self.endpoint, index_name=index_name, credential=AzureKeyCredential(self.api_key)
             )
 
             openai_client = AzureServices.AzureOpenAI()
             query_vector = openai_client.get_embedding(query)
 
             vector_query = VectorizedQuery(
-                vector=query_vector,
-                k_nearest_neighbors=top_k,
-                fields="embedded_content_ltks"
+                vector=query_vector, k_nearest_neighbors=top_k, fields="embedded_content_ltks"
             )
 
             print(f"🔍 Realizando búsqueda híbrida para: '{query}'")
@@ -694,10 +658,10 @@ class AzureServices:
                 filter=odata_filter,
                 vector_queries=[vector_query],
                 query_type=QueryType.SEMANTIC,
-                semantic_configuration_name='semantic-config',
+                semantic_configuration_name="semantic-config",
                 top=top_k,
                 select=["doc_id", "content", "page_number", "bloque", "docnm"],
-                highlight_fields="content"
+                highlight_fields="content",
             )
 
             top_content = [content for content in results]
@@ -721,16 +685,11 @@ class AzureServices:
                 bool: True si hay documentos en el índice, False si no hay documentos o si ocurre un error.
             """
             search_client = SearchClient(
-                endpoint=self.endpoint,
-                index_name=index_name,
-                credential=AzureKeyCredential(self.api_key)
+                endpoint=self.endpoint, index_name=index_name, credential=AzureKeyCredential(self.api_key)
             )
 
             results = search_client.search(
-                search_text="*",
-                filter=f"group_id eq '{hash_group_id}'",
-                select="group_id",
-                top=1000
+                search_text="*", filter=f"group_id eq '{hash_group_id}'", select="group_id", top=1000
             )
 
             for _ in results:
