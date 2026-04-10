@@ -1,35 +1,34 @@
 import json
 import logging
+import os
 import re
-import traceback
-import unicodedata
-from typing import Dict, List
-
-import fitz
-from bs4 import BeautifulSoup
-from dotenv import load_dotenv, find_dotenv
-from langchain.docstore.document import Document
-from langchain_experimental.text_splitter import SemanticChunker
 
 # Ajustar path para importaciones del proyecto
 import sys
-import os
+import traceback
+import unicodedata
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import fitz
+from bs4 import BeautifulSoup
+from dotenv import find_dotenv, load_dotenv
+from langchain.docstore.document import Document
+from langchain_experimental.text_splitter import SemanticChunker
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from utils.ai_services import AzureServices
-from utils.index_config import create_fields, create_vectorsearch, create_semantic_config
+from utils.index_config import create_fields, create_semantic_config, create_vectorsearch
 
 load_dotenv(find_dotenv())
 
 
 class DocumentProcessingPipeline:
     def __init__(
-            self,
-            blob_storage=AzureServices.AzureBlobStorage(),
-            document_intelligence=AzureServices.DocumentIntelligence(),
-            aoi_client=AzureServices.AzureOpenAI(),
-            search_client=AzureServices.AzureIASearch(),
+        self,
+        blob_storage=AzureServices.AzureBlobStorage(),
+        document_intelligence=AzureServices.DocumentIntelligence(),
+        aoi_client=AzureServices.AzureOpenAI(),
+        search_client=AzureServices.AzureIASearch(),
     ):
         self.blob_storage = blob_storage
         self.di = document_intelligence
@@ -44,7 +43,7 @@ class DocumentProcessingPipeline:
             buffer_size=1,
         )
 
-    def reading_processing_documents(self, blob: str, kb_ids: Dict[str, str], index_name: str):
+    def reading_processing_documents(self, blob: str, kb_ids: dict[str, str], index_name: str):
         """
         Lee y procesa los documentos PDF desde Blob Storage, extrayendo texto y tablas.
         Evita reprocesar documentos ya indexados en Azure Search.
@@ -57,8 +56,7 @@ class DocumentProcessingPipeline:
         print(f"Verificando si el documento {blob} ya existe en el índice {index_name} con group_id {group_id}.")
         try:
             check_document_exists = self.search_client.check_document_exists(
-                index_name=index_name,
-                hash_group_id=group_id
+                index_name=index_name, hash_group_id=group_id
             )
         except Exception:
             print(f"Índice {index_name} no existe todavía. Continuando con procesamiento.")
@@ -90,11 +88,7 @@ class DocumentProcessingPipeline:
             # Extraer lote de páginas (batch)
             temp_pdf = fitz.open()
             for page_num in range(start, end):
-                temp_pdf.insert_pdf(
-                    fitz.open(stream=pdf_bytes, filetype="pdf"),
-                    from_page=page_num,
-                    to_page=page_num
-                )
+                temp_pdf.insert_pdf(fitz.open(stream=pdf_bytes, filetype="pdf"), from_page=page_num, to_page=page_num)
             batch_bytes = temp_pdf.tobytes()
             temp_pdf.close()
 
@@ -110,11 +104,7 @@ class DocumentProcessingPipeline:
             # Extraer lote de páginas (batch)
             temp_pdf = fitz.open()
             for page_num in range(start, end):
-                temp_pdf.insert_pdf(
-                    fitz.open(stream=pdf_bytes, filetype="pdf"),
-                    from_page=page_num,
-                    to_page=page_num
-                )
+                temp_pdf.insert_pdf(fitz.open(stream=pdf_bytes, filetype="pdf"), from_page=page_num, to_page=page_num)
             batch_bytes = temp_pdf.tobytes()
             temp_pdf.close()
         # 2. Extraer texto usando Azure Document Intelligence
@@ -124,42 +114,46 @@ class DocumentProcessingPipeline:
         data_poller = poller.result()
         paragraphs = data_poller.paragraphs
         tables = data_poller.tables
-        filtered_paragraphs = [p for p in paragraphs if p.role not in ['pageHeader', 'pageFooter', 'footnote']]
+        filtered_paragraphs = [p for p in paragraphs if p.role not in ["pageHeader", "pageFooter", "footnote"]]
 
         # For para extarer la información de los párrafos filtrados
         for para in filtered_paragraphs:
             content = para.content
             if para.bounding_regions and len(para.bounding_regions) > 0:
                 page_number = start + para.bounding_regions[0].page_number
-                polygon = [(point.x, point.y) for point in para.bounding_regions[0].polygon]
+                # polygon = [(point.x, point.y) for point in para.bounding_regions[0].polygon]
             else:
                 page_number = None
-                polygon = None
-            data_json.append({
-                "docnm_kwd": blob.split("/")[-1].replace(".pdf", ""),
-                "docnm": blob.split("/")[-1],
-                "bloque": blob.split("/")[0],
-                "kb_id": kd_id,
-                "content": content,
-                "page_number": page_number
-            })
+                # polygon = None
+            data_json.append(
+                {
+                    "docnm_kwd": blob.split("/")[-1].replace(".pdf", ""),
+                    "docnm": blob.split("/")[-1],
+                    "bloque": blob.split("/")[0],
+                    "kb_id": kd_id,
+                    "content": content,
+                    "page_number": page_number,
+                }
+            )
 
         # Procesar tablas ajustando el número de página global
         for i, table in enumerate(tables):
             page_number_table = start + table.bounding_regions[0].page_number
-            tables_json.append({
-                "docnm_kwd": blob.split("/")[-1].replace(".pdf", ""),
-                "docnm": blob.split("/")[-1],
-                "bloque": blob.split("/")[0],
-                "kb_id": kd_id,
-                "content": tablas[i],
-                "page_number": [page_number_table]
-            })
+            tables_json.append(
+                {
+                    "docnm_kwd": blob.split("/")[-1].replace(".pdf", ""),
+                    "docnm": blob.split("/")[-1],
+                    "bloque": blob.split("/")[0],
+                    "kb_id": kd_id,
+                    "content": tablas[i],
+                    "page_number": [page_number_table],
+                }
+            )
 
         print(f"Se procesaron {len(data_json)} párrafos y {len(tables_json)} tablas del documento {blob}.")
         return data_json, tables_json
 
-    def semantic_chunking(self, json_data: List[Dict], tables_json: List[Dict]) -> List[Dict]:
+    def semantic_chunking(self, json_data: list[dict], tables_json: list[dict]) -> list[dict]:
         """
         Aplica SemanticChunker sobre el contenido textual agrupado por documento.
         Mapea la metadata correspondiente a cada chunk generado.
@@ -173,7 +167,7 @@ class DocumentProcessingPipeline:
             docs[docnm].append(item)
 
         result_chunks = []
-        for docnm, items in docs.items():
+        for _, items in docs.items():
             # Concatenar contenido y mantener mapeo de offsets a metadata
             full_text = ""
             offset_to_metadata = {}
@@ -189,7 +183,7 @@ class DocumentProcessingPipeline:
                     "docnm": item["docnm"],
                     "bloque": item["bloque"],
                     "kb_id": item["kb_id"],
-                    "page_number": item["page_number"]
+                    "page_number": item["page_number"],
                 }
                 full_text += content + " "
                 current_offset = end_offset + 1
@@ -217,19 +211,15 @@ class DocumentProcessingPipeline:
                                 "docnm_kwd": meta["docnm_kwd"],
                                 "docnm": meta["docnm"],
                                 "bloque": meta["bloque"],
-                                "kb_id": meta["kb_id"]
+                                "kb_id": meta["kb_id"],
                             }
 
-                result_chunks.append({
-                    "content": chunk_content,
-                    **metadata,
-                    "page_number": list(page_numbers)
-                })
+                result_chunks.append({"content": chunk_content, **metadata, "page_number": list(page_numbers)})
         print(f"Se generaron {len(result_chunks)} chunks semánticos a partir de {len(json_data)} párrafos.")
         logging.info(f"Se generaron {len(result_chunks)} chunks semánticos a partir de {len(json_data)} párrafos.")
         return result_chunks + tables_json  # Añadir las tablas al final
 
-    def normalize_data(self, json_data: List[Dict]) -> List[Dict]:
+    def normalize_data(self, json_data: list[dict]) -> list[dict]:
         """
         Normaliza campos content y docnm_kwd para facilitar búsquedas
         (lowercase, sin tildes, sin signos, sin html).
@@ -238,21 +228,23 @@ class DocumentProcessingPipeline:
         def normalize_text(text: str, field: str) -> str:
             soup = BeautifulSoup(text, "html.parser")
             texto = soup.get_text(separator=" ").lower()
-            if field != 'docnm_tks':
-                texto = unicodedata.normalize('NFKD', texto).encode('ASCII', 'ignore').decode('utf-8')
-                texto = re.sub(r'[^\w\s]', '', texto)
-                texto = re.sub(r'\s+', ' ', texto).strip()
+            if field != "docnm_tks":
+                texto = unicodedata.normalize("NFKD", texto).encode("ASCII", "ignore").decode("utf-8")
+                texto = re.sub(r"[^\w\s]", "", texto)
+                texto = re.sub(r"\s+", " ", texto).strip()
             return texto
 
         print(f"Se normalizaron {len(json_data)} registros: content_ltks y docnm_tks.")
         return [
-            {**item,
-             "content_ltks": normalize_text(item["content"], 'content_ltks'),
-             "docnm_tks": normalize_text(item["docnm_kwd"], 'docnm_tks')}
+            {
+                **item,
+                "content_ltks": normalize_text(item["content"], "content_ltks"),
+                "docnm_tks": normalize_text(item["docnm_kwd"], "docnm_tks"),
+            }
             for item in json_data
         ]
 
-    def create_knowledge_base(self, index_name: str, knowledge_base: List[dict]):
+    def create_knowledge_base(self, index_name: str, knowledge_base: list[dict]):
         """
         Crea o actualiza una base de conocimiento en Azure Search para el índice "index_name".
 
@@ -270,21 +262,22 @@ class DocumentProcessingPipeline:
             index_name=index_name,
             fields=create_fields(),
             vector_search=create_vectorsearch(),
-            semantic_config=[create_semantic_config()]
+            semantic_config=[create_semantic_config()],
         )
         # Convertir la base de conocimiento a minúsculas
 
         # Agregar una nueva columna que combine el contenido de todas las columnas
         for doc in knowledge_base:
-            combined_str = " ".join(str(v) for v in doc.values())  # Convertir todos los valores del diccionario a string
+            combined_str = " ".join(
+                str(v) for v in doc.values()
+            )  # Convertir todos los valores del diccionario a string
             combined_kb_id_docnm = f"{doc['bloque']}_{doc['docnm']}"
-            doc['doc_id'] = self.search_client.consistent_encode(combined_str)
-            doc['group_id'] = self.search_client.consistent_encode(combined_kb_id_docnm)
+            doc["doc_id"] = self.search_client.consistent_encode(combined_str)
+            doc["group_id"] = self.search_client.consistent_encode(combined_kb_id_docnm)
 
         # Generar embeddings para los nuevos documentos
         docs_with_embeddings = self.aoi_client.embeddings_generation(
-            knowledge_base,
-            columns={"content_ltks": "embedded_content_ltks"}
+            knowledge_base, columns={"content_ltks": "embedded_content_ltks"}
         )
 
         # Subir nuevos documentos al índice (ya con embeddings generados)
@@ -304,13 +297,16 @@ class DocumentProcessingPipeline:
         blobs_list = self.blob_storage.list_blobs()
         # PASO 2: Leer y procesar documentos
         for num, blob in enumerate(blobs_list[3:4], 1):
-
             print("\n")
-            print(f"################################ Procesando documento [{num}]: {blob} #####################################")
+            print(
+                f"################################ Procesando documento [{num}]: {blob} #####################################"
+            )
             print("\n")
 
             try:
-                data_json, tables_json = pipeline.reading_processing_documents(blob=blob, kb_ids=kb_ids, index_name=index_name)
+                data_json, tables_json = pipeline.reading_processing_documents(
+                    blob=blob, kb_ids=kb_ids, index_name=index_name
+                )
 
                 if not data_json:
                     logging.warning(f"No se procesó el documento {blob}. Continuando con el siguiente.")
@@ -340,20 +336,17 @@ class DocumentProcessingPipeline:
                     f"Traceback:\n{traceback.format_exc()}"
                 )
                 logging.error(error_msg)
-                errores.append({
-                    "num": num,
-                    "blob": blob,
-                    "error": str(e),
-                    "traceback": traceback.format_exc()
-                })
+                errores.append({"num": num, "blob": blob, "error": str(e), "traceback": traceback.format_exc()})
                 continue  # Sigue con el siguiente documento
 
         print(
             f"Procesados {metrics['blobs']} documentos, {metrics['paragraphs']} párrafos, "
-            f"{metrics['tables']} tablas, {metrics['chunks']} chunks y normalizados {metrics['normalized']} registros.")
+            f"{metrics['tables']} tablas, {metrics['chunks']} chunks y normalizados {metrics['normalized']} registros."
+        )
         logging.info(
             f"Procesados {metrics['blobs']} documentos, {metrics['paragraphs']} párrafos, "
-            f"{metrics['tables']} tablas, {metrics['chunks']} chunks y normalizados {metrics['normalized']} registros.")
+            f"{metrics['tables']} tablas, {metrics['chunks']} chunks y normalizados {metrics['normalized']} registros."
+        )
 
         if errores:
             print(f"\nSe encontraron {len(errores)} errores durante la ejecución.")
@@ -363,11 +356,10 @@ class DocumentProcessingPipeline:
 
 
 if __name__ == "__main__":
-
     pipeline = DocumentProcessingPipeline()
 
     # Obtener lista identificadores de los documentos segun el bloque
-    with open('../../kb_id_to_name.json', 'r', encoding='utf-8') as archivo:
+    with open("../../kb_id_to_name.json", encoding="utf-8") as archivo:
         kb_ids = json.load(archivo)
 
     # Procesar documento

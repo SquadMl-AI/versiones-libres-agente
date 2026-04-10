@@ -39,18 +39,20 @@ jobs:
           client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
 
       - name: Log in to Azure Container Registry
-        # Usamos ACA_NAME que debe estar en los 'Variables' del entorno
         run: az acr login --name ${{ vars.ACA_NAME }}
 
       - name: Build and Push Docker image
         run: |
-          # Imagen dinámica basada en el SHA del commit
-          IMAGE_PATH="${{ vars.ACR_NAME }}/memorias975-backend:${{ github.sha }}"
-          
-          # Construimos usando el hash del commit para mantener trazabilidad
-          docker build -t ${{ vars.ACR_NAME }}.azurecr.io/backend:${{ github.sha }} .
-          docker push ${{ vars.ACR_NAME }}.azurecr.io/backend:${{ github.sha }}
-          
+          IMAGE_BASE="${{ vars.ACR_NAME }}.azurecr.io/backend"
+
+          docker build \
+            -t "${IMAGE_BASE}:${{ github.sha }}" \
+            -t "${IMAGE_BASE}:latest" \
+            .
+
+          docker push "${IMAGE_BASE}:${{ github.sha }}"
+          docker push "${IMAGE_BASE}:latest"
+
       - name: Deploy to Azure Container App
         uses: azure/container-apps-deploy-action@v1
         with:
@@ -58,4 +60,3 @@ jobs:
           containerAppName: ${{ vars.ACA_NAME }}
           imageToDeploy: ${{ vars.ACR_NAME }}.azurecr.io/backend:${{ github.sha }}
           acrName: ${{ vars.ACR_NAME }}
-          

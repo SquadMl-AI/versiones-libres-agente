@@ -1,13 +1,14 @@
 from fastapi import APIRouter
+
 from app.api.v1.endpoints import (
     advance_search,
-    history_session,
     blobs,
     chat_ask,
+    feed_messages,
     feedback_synthesis,
+    history_session,
     synthesis,
     users_auth,
-    feed_messages,
 )
 
 api_router = APIRouter()

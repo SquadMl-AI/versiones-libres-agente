@@ -4,7 +4,6 @@ import os
 import re
 import sys
 import unicodedata
-from typing import Optional
 
 from bs4 import BeautifulSoup
 from pydantic import BaseModel
@@ -13,7 +12,6 @@ from pydantic import BaseModel
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from utils.ai_services import AzureServices
-
 
 # =================================================================================================
 #                                                           PIPELINE DEL SERVICIO RAG PARA SENTENCIAS
@@ -25,7 +23,7 @@ connection_string = os.getenv("AZURE_COSMOSDB_ENDPOINT")
 cosmos = AzureServices.CosmosDB(
     connection_string=connection_string,
     db_name=db,
-    collection_names=collection  # collection_names="Graphs_Users"
+    collection_names=collection,  # collection_names="Graphs_Users"
 )
 
 
@@ -40,8 +38,8 @@ class Source(BaseModel):
     document_name: str
     content: str
     page_number: list[int]  # Lista de números de página donde se encuentra el contenido
-    bloque: Optional[str] = None  # Bloque de información, si aplica
-    highlights: Optional[dict] = None  # Lista de fragmentos destacados, si aplica
+    bloque: str | None = None  # Bloque de información, si aplica
+    highlights: dict | None = None  # Lista de fragmentos destacados, si aplica
 
 
 class RAGResponse(BaseModel):
@@ -60,9 +58,7 @@ class RAGPipelineSentencias:
         self.aoai_client = AzureServices.AzureOpenAI()
         self.search_client = AzureServices.AzureIASearch()
         self.cosmos = AzureServices.CosmosDB(
-            connection_string=connection_string,
-            db_name=db,
-            collection_names=collection
+            connection_string=connection_string, db_name=db, collection_names=collection
         )
 
     def normalize_text(self, query: str) -> str:
@@ -81,19 +77,16 @@ class RAGPipelineSentencias:
     #  4. GENERACIÓN DE RESPUESTA CON CITAS (LÓGICA PRINCIPAL)
     # ======================================================================================
 
-    def generate_cited_answer(
-        self, query: str, history: list, retrieved_chunks: list[dict]
-    ) -> RAGResponse:
+    def generate_cited_answer(self, query: str, history: list, retrieved_chunks: list[dict]) -> RAGResponse:
         """
         Genera una respuesta con citas incrustadas y una lista de fuentes estructuradas.
         """
         if not retrieved_chunks:
             return RAGResponse(
                 answer=(
-                    "Lo siento, no pude encontrar información relevante en los documentos "
-                    "para responder a tu pregunta."
+                    "Lo siento, no pude encontrar información relevante en los documentos para responder a tu pregunta."
                 ),
-                sources=[]
+                sources=[],
             )
 
         thresholds = [2, 1.5, 1]
@@ -101,8 +94,7 @@ class RAGPipelineSentencias:
 
         for threshold in thresholds:
             top_retrieved_chunks = [
-                content for content in retrieved_chunks
-                if content.get("@search.reranker_score", 0) >= threshold
+                content for content in retrieved_chunks if content.get("@search.reranker_score", 0) >= threshold
             ]
             if top_retrieved_chunks:
                 print(f"✅ Se encontraron {len(top_retrieved_chunks)} resultados con score >= {threshold}")
@@ -132,7 +124,7 @@ class RAGPipelineSentencias:
                 content=chunk.get("content", ""),
                 page_number=chunk.get("page_number", []),
                 bloque=chunk.get("bloque"),
-                highlights=chunk.get("@search.highlights", {})
+                highlights=chunk.get("@search.highlights", {}),
             )
 
         # 2. Diseñar el prompt de sistema para forzar las citas
@@ -203,13 +195,7 @@ class RAGPipelineSentencias:
     #  PIPELINE PRINCIPAL
     # ======================================================================================
 
-    def rag_pipeline(
-        self,
-        user_query: str,
-        user_email: str,
-        index_name: str = "index_sentencias",
-        top_k: int = 50
-    ):
+    def rag_pipeline(self, user_query: str, user_email: str, index_name: str = "index_sentencias", top_k: int = 50):
         """
         Pipeline completo de RAG que toma una consulta y devuelve una respuesta contextualizada.
 
@@ -260,10 +246,10 @@ class RAGPipelineSentencias:
 if __name__ == "__main__":
     # pregunta_usuario = "Qué argumentos presentó la defensa de Jorge Barney Veloza García en la apelación?"
     pregunta_usuario = "Que se comentó en el caso de mancuso"
-    # pregunta_usuario = "¿Qué se determinó sobre la participación de la guerrilla del M-19 en los eventos de la masacre de El Salado?"
+    # pregunta_usuario = "¿Qué se determinó sobre la participación de la guerrilla
+    # del M-19 en los eventos de la masacre de El Salado?"
 
     ragpipeline = RAGPipelineSentencias()
     final_response = ragpipeline.rag_pipeline(
         pregunta_usuario, index_name="index_sentencias", top_k=5, user_email="Default"
     )
-    print(final_response)

@@ -1,10 +1,11 @@
-from fastapi import APIRouter, FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1.api import api_router
 import logging
 
-router = APIRouter()
+from fastapi import APIRouter, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.v1.api import api_router
+
+router = APIRouter()
 
 
 # Configure logging
@@ -15,7 +16,7 @@ app = FastAPI(title="Memorias de Justicia y Paz API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],    
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
