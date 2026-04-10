@@ -1,0 +1,25 @@
+start_api.sh: line 5: ../../venv/bin/activate: No such file or directory
+INFO:     Will watch for changes in these directories: ['/home/canequero/aifiscalia/rag_es_cloud/sentencias_975_react/backend']
+INFO:     Uvicorn running on http://0.0.0.0:5555 (Press CTRL+C to quit)
+INFO:     Started reloader process [1085479] using WatchFiles
+/home/canequero/miniconda3/lib/python3.12/site-packages/fuzzywuzzy/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+  warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+INFO:root:Connecting to Elasticsearch at https://e3d3baffbdc648ffa836c0b55636732e.eastus2.azure.elastic-cloud.com:443 with user ''
+INFO:root:Elasticsearch client initialized (no connection test at init).
+INFO:     Started server process [1085483]
+INFO:     Waiting for application startup.
+INFO:app.main:Iniciando la aplicación y verificando servicios de modelos...
+INFO:app.main:Probando el modelo de embedding...
+INFO:app.main:✅ El servicio de embedding funciona correctamente.
+INFO:app.main:Probando el modelo generativo: Azure OpenAI (gpt-4.1-mini)...
+INFO:httpx:HTTP Request: POST https://fgnfoundrylabo3874907599.openai.azure.com/openai/deployments/gpt-4.1-mini/chat/completions?api-version=2025-01-01-preview "HTTP/1.1 200 OK"
+INFO:app.main:✅ El modelo generativo Azure OpenAI (gpt-4.1-mini) funciona correctamente.
+INFO:     Application startup complete.
+start_api.sh: line 5: ../../venv/bin/activate: No such file or directory
+INFO:     Will watch for changes in these directories: ['/home/canequero/aifiscalia/rag_es_cloud/sentencias_975_react/backend']
+ERROR:    [Errno 98] Address already in use
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1085483]
+INFO:     Stopping reloader process [1085479]

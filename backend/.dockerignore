@@ -1,0 +1,46 @@
+# ──────────────────────────────────────
+# .dockerignore – Backend Memorias 975
+# ──────────────────────────────────────
+
+# Control de versiones
+.git
+.gitignore
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Archivos de entorno local
+.env
+.env.*
+!.env.example
+
+# Cache y compilados de Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Tests y herramientas de desarrollo
+tests/
+ruff.toml
+pytest.ini
+setup.cfg
+
+# Notebooks y documentación
+*.ipynb
+.ipynb_checkpoints/
+DOCUMENTATE.md
+README.md
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
