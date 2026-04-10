@@ -260,10 +260,10 @@ class RAGPipelineSentencias:
 if __name__ == "__main__":
     # pregunta_usuario = "Qué argumentos presentó la defensa de Jorge Barney Veloza García en la apelación?"
     pregunta_usuario = "Que se comentó en el caso de mancuso"
-    # pregunta_usuario = "¿Qué se determinó sobre la participación de la guerrilla del M-19 en los eventos de la masacre de El Salado?"
+    # pregunta_usuario = "¿Qué se determinó sobre la participación de la guerrilla
+    # del M-19 en los eventos de la masacre de El Salado?"
 
     ragpipeline = RAGPipelineSentencias()
     final_response = ragpipeline.rag_pipeline(
         pregunta_usuario, index_name="index_sentencias", top_k=5, user_email="Default"
     )
-    print(final_response)
