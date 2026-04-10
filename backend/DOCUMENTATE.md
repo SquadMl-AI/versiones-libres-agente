@@ -4,7 +4,7 @@
 
 ## 📖 ¿QUÉ ES ESTE PROYECTO?
 
-**Memorias 975** es un **backend de API REST basado en FastAPI** que implementa un sistema **RAG (Retrieval-Augmented Generation)** para búsqueda inteligente, síntesis de información y análisis de documentos.
+**Memorias 975** es un **backend de API REST basado en FastAPI** que implementa un sistema **RAG (Retrieval-Augmented Generation)** para búsqueda inteligente,síntesis de información y análisis de documentos.
 
 ### 🎯 **Propósito Principal**
 
