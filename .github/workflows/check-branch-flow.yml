@@ -7,7 +7,7 @@ on:
       - develop
 
 jobs:
-  check-source:
+  check-source: # Este nombre debe coincidir con el 'context' en tus Rulesets
     runs-on: ubuntu-latest
     steps:
       - name: Validate branch source
@@ -15,21 +15,18 @@ jobs:
           SOURCE_BRANCH="${{ github.head_ref }}"
           TARGET_BRANCH="${{ github.base_ref }}"
 
-          echo "Source: $SOURCE_BRANCH"
-          echo "Target: $TARGET_BRANCH"
+          echo "Evaluando flujo: $SOURCE_BRANCH -> $TARGET_BRANCH"
 
-          # main solo recibe de develop
+          # REGLA 1: Solo develop -> main
           if [ "$TARGET_BRANCH" = "main" ] && [ "$SOURCE_BRANCH" != "develop" ]; then
-            echo "ERROR: Solo se permiten merges a 'main' desde 'develop'."
+            echo "::error::Flujo inválido. Solo se permite merge a 'main' desde 'develop'."
             exit 1
           fi
 
-          # develop solo recibe de feature/*
+          # REGLA 2: Solo feature/* -> develop
           if [ "$TARGET_BRANCH" = "develop" ]; then
-            if [[ ! "$SOURCE_BRANCH" =~ ^feature\/.+$ ]]; then
-              echo "ERROR: Solo se permiten merges a 'develop' desde ramas 'feature/*'."
+            if [[ ! "$SOURCE_BRANCH" =~ ^feature/ ]]; then
+              echo "::error::Flujo inválido. Solo se permiten merges a 'develop' desde ramas 'feature/*'."
               exit 1
             fi
           fi
-
-          echo "Branch flow validado correctamente."
