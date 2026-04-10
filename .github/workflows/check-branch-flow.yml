@@ -1,0 +1,35 @@
+name: Check Branch Flow
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  check-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate branch source
+        run: |
+          SOURCE_BRANCH="${{ github.head_ref }}"
+          TARGET_BRANCH="${{ github.base_ref }}"
+
+          echo "Source: $SOURCE_BRANCH"
+          echo "Target: $TARGET_BRANCH"
+
+          # main solo recibe de develop
+          if [ "$TARGET_BRANCH" = "main" ] && [ "$SOURCE_BRANCH" != "develop" ]; then
+            echo "ERROR: Solo se permiten merges a 'main' desde 'develop'."
+            exit 1
+          fi
+
+          # develop solo recibe de feature/*
+          if [ "$TARGET_BRANCH" = "develop" ]; then
+            if [[ ! "$SOURCE_BRANCH" =~ ^feature\/.+$ ]]; then
+              echo "ERROR: Solo se permiten merges a 'develop' desde ramas 'feature/*'."
+              exit 1
+            fi
+          fi
+
+          echo "Branch flow validado correctamente."
