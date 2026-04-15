@@ -124,7 +124,7 @@ pytesseract==0.3.13
 python-dateutil==2.9.0.post0
 python-docx==1.2.0
 python-dotenv==1.2.1
-python-multipart==0.0.22
+python-multipart==0.0.26
 pytz==2026.1.post1
 pyvis==0.3.2
 PyYAML==6.0.3
