@@ -50,5 +50,5 @@ jobs:
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ vars.APPS_NAME }} # La variable que creaste en los environments
+          app-name: ${{ vars.APP_NAME }} # La variable que creaste en los environments
           images: ${{ vars.ACR_NAME }}.azurecr.io/frontend:${{ github.sha }}
