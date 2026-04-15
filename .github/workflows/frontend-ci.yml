@@ -1,71 +1,54 @@
-# name: Frontend CI
+name: Frontend CD
+on:
+  push:
+    branches: [develop, main]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend-cd.yml"
 
-# on:
-#   pull_request:
-#     branches: [develop, main]
-#     paths:
-#       - "frontend/**"
-#       - ".github/workflows/frontend-ci.yml"
-#   push:
-#     branches: [develop, main]
-#     paths:
-#       - "frontend/**"
-#       - ".github/workflows/frontend-ci.yml"
+permissions:
+  contents: read
+  id-token: write
 
-# permissions:
-#   contents: read
+concurrency:
+  group: frontend-cd-${{ github.ref }}
+  cancel-in-progress: true
 
-# concurrency:
-#   group: frontend-ci-${{ github.ref }}
-#   cancel-in-progress: true
+jobs:
+  deploy:
+    name: Build and Deploy Frontend
+    runs-on: ubuntu-latest
+    # Selección dinámica del environment (env_prod o env_dev)
+    environment: ${{ github.ref_name == 'main' && 'env_prod' || 'env_dev' }}
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-# jobs:
-#   quality:
-#     name: Code Quality
-#     runs-on: ubuntu-latest
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-#     defaults:
-#       run:
-#         working-directory: ./frontend
+      - name: Log in to Azure Container Registry
+        run: az acr login --name ${{ vars.ACR_NAME }}
 
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
-#         with:
-#           fetch-depth: 0
+      - name: Build and Push Docker image
+        run: |
+          IMAGE_BASE="${{ vars.ACR_NAME }}.azurecr.io/frontend"
+          docker build \
+            -t "${IMAGE_BASE}:${{ github.sha }}" \
+            -t "${IMAGE_BASE}:latest" \
+            .
+          docker push "${IMAGE_BASE}:${{ github.sha }}"
+          docker push "${IMAGE_BASE}:latest"
 
-#       - name: Setup Node
-#         uses: actions/setup-node@v4
-#         with:
-#           node-version: "20"
-#           cache: "npm"
-#           cache-dependency-path: frontend/package-lock.json
-
-#       - name: Install dependencies
-#         run: npm ci
-
-#       - name: Lint
-#         run: npm run lint --if-present
-
-#       - name: Type Check
-#         run: npm run typecheck --if-present
-
-#       - name: Test
-#         run: npm test --if-present
-
-#       - name: Build
-#         run: npm run build --if-present
-
-#       - name: SonarQube Scan
-#         if: ${{ env.SONAR_TOKEN != '' && env.SONAR_HOST_URL != '' }}
-#         uses: SonarSource/sonarqube-scan-action@v6
-#         env:
-#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-#         with:
-#           projectBaseDir: ./frontend
-#           args: >
-#             -Dsonar.projectKey=memorias975-frontend
-#             -Dsonar.projectName=memorias975-frontend
-#             -Dsonar.sources=.
-#             -Dsonar.exclusions=**/node_modules/**,**/.next/**,**/dist/**,**/coverage/**
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ vars.APPS_NAME }} # La variable que creaste en los environments
+          images: ${{ vars.ACR_NAME }}.azurecr.io/frontend:${{ github.sha }}
