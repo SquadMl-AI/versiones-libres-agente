@@ -1,54 +1,54 @@
-name: Frontend CD
-on:
-  push:
-    branches: [develop]
-    paths:
-      - "frontend/**"
-      - ".github/workflows/frontend-cd.yml"
+# name: Frontend CD
+# on:
+#   push:
+#     branches: [develop]
+#     paths:
+#       - "frontend/**"
+#       - ".github/workflows/frontend-cd.yml"
 
-permissions:
-  contents: read
-  id-token: write
+# permissions:
+#   contents: read
+#   id-token: write
 
-concurrency:
-  group: frontend-cd-${{ github.ref }}
-  cancel-in-progress: true
+# concurrency:
+#   group: frontend-cd-${{ github.ref }}
+#   cancel-in-progress: true
 
-jobs:
-  deploy:
-    name: Build and Deploy Frontend
-    runs-on: ubuntu-latest
-    # Selección dinámica del environment (env_prod o env_dev)
-    environment: ${{ github.ref_name == 'main' && 'env_prod' || 'env_dev' }}
-    defaults:
-      run:
-        working-directory: ./frontend
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+# jobs:
+#   deploy:
+#     name: Build and Deploy Frontend
+#     runs-on: ubuntu-latest
+#     # Selección dinámica del environment (env_prod o env_dev)
+#     environment: ${{ github.ref_name == 'main' && 'env_prod' || 'env_dev' }}
+#     defaults:
+#       run:
+#         working-directory: ./frontend
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+#       - name: Azure Login
+#         uses: azure/login@v2
+#         with:
+#           client-id: ${{ secrets.AZURE_CLIENT_ID }}
+#           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+#           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Log in to Azure Container Registry
-        run: az acr login --name ${{ vars.ACR_NAME }}
+#       - name: Log in to Azure Container Registry
+#         run: az acr login --name ${{ vars.ACR_NAME }}
 
-      - name: Build and Push Docker image
-        run: |
-          IMAGE_BASE="${{ vars.ACR_NAME }}.azurecr.io/frontend"
-          docker build \
-            -t "${IMAGE_BASE}:${{ github.sha }}" \
-            -t "${IMAGE_BASE}:latest" \
-            .
-          docker push "${IMAGE_BASE}:${{ github.sha }}"
-          docker push "${IMAGE_BASE}:latest"
+#       - name: Build and Push Docker image
+#         run: |
+#           IMAGE_BASE="${{ vars.ACR_NAME }}.azurecr.io/frontend"
+#           docker build \
+#             -t "${IMAGE_BASE}:${{ github.sha }}" \
+#             -t "${IMAGE_BASE}:latest" \
+#             .
+#           docker push "${IMAGE_BASE}:${{ github.sha }}"
+#           docker push "${IMAGE_BASE}:latest"
 
-      - name: Deploy to Azure App Service
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ vars.APP_NAME }} # La variable que creaste en los environments
-          images: ${{ vars.ACR_NAME }}.azurecr.io/frontend:${{ github.sha }}
+#       - name: Deploy to Azure App Service
+#         uses: azure/webapps-deploy@v3
+#         with:
+#           app-name: ${{ vars.APP_NAME }} # La variable que creaste en los environments
+#           images: ${{ vars.ACR_NAME }}.azurecr.io/frontend:${{ github.sha }}
