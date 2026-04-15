@@ -15,7 +15,7 @@ Este proyecto proporciona un servicio de **búsqueda avanzada y generación de r
 - **Análisis de relevancia** de documentos y colecciones
 - **Análisis de grafos** para relaciones entre documentos
 
-El sistema está diseñado para consultores, investigadores y usuarios que necesitan buscar, sintetizar y analizar información compleja de documentos (audiencias, sentencias, reportes, etc.).
+El sistema está diseñado para consultores, investigadores y usuarios que necesitan buscar, sintetizar y analizar información compleja de documentos (audiencias, sentencias,reportes, etc.).
 
 ### 💡 **Casos de Uso**
 
