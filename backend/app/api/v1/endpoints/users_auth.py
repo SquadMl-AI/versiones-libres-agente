@@ -10,20 +10,21 @@ load_dotenv(find_dotenv())
 
 router = APIRouter()
 
-connection_string= os.getenv("AZURE_COSMOSDB_ENDPOINT")
-db_name=os.getenv("AZURE_COSMOSDB_DATABASE_NAME")
-collection= "Users_Auth"
-docs= ["audiencias_usuarios", "sentencias_usuarios"]
+connection_string = os.getenv("AZURE_COSMOSDB_ENDPOINT")
+db_name = os.getenv("AZURE_COSMOSDB_DATABASE_NAME")
+collection = "Users_Auth"
+docs = ["audiencias_usuarios", "sentencias_usuarios"]
 
 
-cosmos = AzureServices.CosmosDB(connection_string=connection_string, db_name= db_name, collection_names= collection)
+cosmos = AzureServices.CosmosDB(connection_string=connection_string, db_name=db_name, collection_names=collection)
+
 
 class UserAuth(BaseModel):
     e_mail: str
 
 
 @router.post("/users_auth")
-def get_user_auth(query:UserAuth):
+def get_user_auth(query: UserAuth):
     try:
         users = cosmos.get_users_lists(collection_name=collection, doc_ids=docs)
         access = set()

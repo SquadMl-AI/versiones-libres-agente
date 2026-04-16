@@ -1,6 +1,7 @@
 """
 Este modulo se encarga de gestionar los endpoints relacionados con la retroalimentación de los mensajes.
 """
+
 # Importaciones necesarias
 import os
 
@@ -13,27 +14,29 @@ from app.utils.ai_services import AzureServices
 load_dotenv(find_dotenv())
 
 # Instanciamos un router
-router= APIRouter()
+router = APIRouter()
 # Usamos la configuración de Azure Cosmos DB
-connection_string= os.getenv("AZURE_COSMOSDB_ENDPOINT")
-db_name=os.getenv("AZURE_COSMOSDB_DATABASE_NAME")
-collection= "Users"
+connection_string = os.getenv("AZURE_COSMOSDB_ENDPOINT")
+db_name = os.getenv("AZURE_COSMOSDB_DATABASE_NAME")
+collection = "Users"
 
 # Instanciamos el cliente de Cosmos DB
-cosmos = AzureServices.CosmosDB(connection_string=connection_string, db_name= db_name, collection_names= collection)
+cosmos = AzureServices.CosmosDB(connection_string=connection_string, db_name=db_name, collection_names=collection)
+
 
 # Definimos el modelo para la retroalimentación de mensajes
 class MessagesFeedback(BaseModel):
-    message_id: str # ID del mensaje
-    feed: int # Valor de retroalimentación
+    message_id: str  # ID del mensaje
+    feed: int  # Valor de retroalimentación
+
 
 @router.put("/feed_message")
 def feed_message(request: MessagesFeedback):
     """
     Endpoint para actualizar la retroalimentación de un mensaje.
     """
-    filter_field= {"_id": request.message_id}
-    update_field= {"feed": request.feed}
+    filter_field = {"_id": request.message_id}
+    update_field = {"feed": request.feed}
 
     try:
         # Actualizamos el mensaje en la base de datos

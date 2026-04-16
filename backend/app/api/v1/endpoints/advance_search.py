@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter
 from pydantic import BaseModel
 
@@ -6,7 +5,8 @@ from app.services.search_category_service import SearchCategoryChunks
 
 router = APIRouter()
 
-search= SearchCategoryChunks()
+search = SearchCategoryChunks()
+
 
 class Request(BaseModel):
     query: str | None = None
@@ -19,9 +19,12 @@ class Request(BaseModel):
 # End-points #
 ##############
 
+
 @router.post("/advance_search")
 async def advance_search(request: Request):
 
-    response= search.classification_pipeline_endpoint(query=request.query,collections=request.bloque, documents=request.file)
+    response = search.classification_pipeline_endpoint(
+        query=request.query, collections=request.bloque, documents=request.file
+    )
 
     return response
