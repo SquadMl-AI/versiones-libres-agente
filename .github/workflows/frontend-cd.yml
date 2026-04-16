@@ -18,6 +18,7 @@ jobs:
   deploy:
     name: Build and Deploy Frontend
     runs-on: ubuntu-latest
+    # Selección dinámica del environment
     environment: ${{ github.ref_name == 'main' && 'env_prod' || 'env_dev' }}
     
     defaults:
@@ -49,8 +50,7 @@ jobs:
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ vars.APP_NAME }}
-          # Si en App Service configuraron un nombre de contenedor específico, se usa aquí:
+          app-name: ${{ vars.APPS_NAME }}
           container-name: ${{ vars.FRONTEND_CONTAINER_NAME }} 
           images: ${{ vars.ACR_NAME }}.azurecr.io/frontend:${{ github.sha }}
           
