@@ -15,10 +15,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  deploy-frontend:
     name: Build and Deploy Frontend
     runs-on: ubuntu-latest
-    # Selección dinámica del environment
     environment: ${{ github.ref_name == 'main' && 'env_prod' || 'env_dev' }}
     
     defaults:
@@ -50,6 +49,6 @@ jobs:
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ vars.APP_NAME }}
-          container-name: ${{ vars.ACA_CONTAINER_NAME }} 
+          # Para App Service SOLO necesitas estos dos campos:
+          app-name: ${{ vars.APP_NAME }} 
           images: ${{ vars.ACR_NAME }}.azurecr.io/frontend:${{ github.sha }}
