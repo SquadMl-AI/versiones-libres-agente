@@ -9,7 +9,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: backend-cd-${{ github.ref }}
@@ -55,5 +54,6 @@ jobs:
         with:
           resourceGroup: ${{ vars.RESOURCE_GROUP }}
           containerAppName: ${{ vars.ACA_NAME }}
+          containerName: ${{ vars.ACA_CONTAINER_NAME }}
           imageToDeploy: ${{ vars.ACR_NAME }}.azurecr.io/backend:${{ github.sha }}
           acrName: ${{ vars.ACR_NAME }}
