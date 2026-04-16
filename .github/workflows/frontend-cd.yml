@@ -50,7 +50,6 @@ jobs:
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ vars.APPS_NAME }}
+          app-name: ${{ vars.APP_NAME }}
           container-name: ${{ vars.FRONTEND_CONTAINER_NAME }} 
           images: ${{ vars.ACR_NAME }}.azurecr.io/frontend:${{ github.sha }}
-          
