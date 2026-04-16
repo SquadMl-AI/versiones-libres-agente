@@ -1,10 +1,10 @@
-from fastapi import FastAPI, HTTPException, APIRouter
-from pydantic import BaseModel
-from typing import Optional
-from app.utils.ai_services import AzureServices
-from datetime import datetime
 import os
-from dotenv import load_dotenv, find_dotenv
+
+from dotenv import find_dotenv, load_dotenv
+from fastapi import APIRouter, HTTPException
+
+from app.utils.ai_services import AzureServices
+
 load_dotenv(find_dotenv())
 
 router = APIRouter()
@@ -22,4 +22,4 @@ def get_history(user_email:str):
         messages = cosmos.get_messages_by_user(user_email, "Graphs_Users")
         return messages
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e)) from e

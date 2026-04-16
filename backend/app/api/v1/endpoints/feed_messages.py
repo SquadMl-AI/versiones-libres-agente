@@ -2,15 +2,17 @@
 Este modulo se encarga de gestionar los endpoints relacionados con la retroalimentación de los mensajes.
 """
 # Importaciones necesarias
-from pydantic import BaseModel
-from typing import Optional
-from fastapi import APIRouter, HTTPException
 import os
-from app.utils.ai_services import AzureServices
+
 from dotenv import find_dotenv, load_dotenv
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+
+from app.utils.ai_services import AzureServices
+
 load_dotenv(find_dotenv())
 
-# Instanciamos un router 
+# Instanciamos un router
 router= APIRouter()
 # Usamos la configuración de Azure Cosmos DB
 connection_string= os.getenv("AZURE_COSMOSDB_ENDPOINT")
@@ -39,4 +41,4 @@ def feed_message(request: MessagesFeedback):
         return {"message": "Campo feed actualizado con éxito"}
     except Exception as e:
         print(f"Error al actualizar feed: {e}")
-        raise HTTPException(status_code=500, detail="Error al actualizar el feed del mensaje")
+        raise HTTPException(status_code=500, detail="Error al actualizar el feed del mensaje") from e

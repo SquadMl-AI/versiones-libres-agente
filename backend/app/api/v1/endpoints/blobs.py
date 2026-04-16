@@ -1,6 +1,6 @@
+
 from fastapi import APIRouter, Query
-from pydantic import BaseModel
-from typing import Optional
+
 from app.utils.ai_services import AzureServices
 
 router_folders = APIRouter()
@@ -17,7 +17,7 @@ def get_folders():
     for b in blobs:
         carp= b.split("/")[0]
         carpetas.append(carp)
-    
+
     final_list= sorted(set(carpetas))
     return final_list
 
@@ -28,6 +28,6 @@ def get_files(bloque: list[str] = Query(...)):
         files = blob.list_blobs(prefix=f"{folder}/")
         for file in files:
             file_name= file.split("/")[-1]
-            all_files.append(file_name)  
+            all_files.append(file_name)
     return all_files
 

@@ -1,10 +1,11 @@
-from fastapi import FastAPI, HTTPException, APIRouter
+import os
+
+from dotenv import find_dotenv, load_dotenv
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import Optional
+
 from app.utils.ai_services import AzureServices
 
-import os
-from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 router = APIRouter()
@@ -25,7 +26,7 @@ class UserAuth(BaseModel):
 def get_user_auth(query:UserAuth):
     try:
         users = cosmos.get_users_lists(collection_name=collection, doc_ids=docs)
-        access = set()  
+        access = set()
         correo_encontrado = None
         for user in users:
             if user["CORREO"].lower() == query.e_mail.lower():
@@ -36,4 +37,4 @@ def get_user_auth(query:UserAuth):
         else:
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e)) from e

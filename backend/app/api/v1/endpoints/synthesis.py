@@ -1,13 +1,9 @@
+from typing import Any
+
 from fastapi import APIRouter
 from pydantic import BaseModel
-import os
-import uvicorn
-from app.services.synthesis_service import  SynthesisCategoryChunks
-from typing import Optional, List, Any
-from app.utils.ai_services import AzureServices
 
-import json
-from fastapi.responses import JSONResponse
+from app.services.synthesis_service import SynthesisCategoryChunks
 
 router = APIRouter()
 
@@ -16,7 +12,7 @@ synthesis= SynthesisCategoryChunks()
 class Request(BaseModel):
 
     query: str
-    chunks: List[dict[str, Any]]
+    chunks: list[dict[str, Any]]
 
 
 

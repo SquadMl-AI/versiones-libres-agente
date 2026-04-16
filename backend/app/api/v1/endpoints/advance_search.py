@@ -1,24 +1,18 @@
-from fastapi import FastAPI, HTTPException, APIRouter
-from pydantic import BaseModel
-import os
-import uvicorn
-from app.services.search_category_service import SearchCategoryChunks
-from langchain_core.messages import HumanMessage
-from typing import Optional, List
-from app.utils.ai_services import AzureServices
 
-import json
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter
+from pydantic import BaseModel
+
+from app.services.search_category_service import SearchCategoryChunks
 
 router = APIRouter()
 
 search= SearchCategoryChunks()
 
 class Request(BaseModel):
-    query: Optional[str] = None
-    bloque: Optional[List[str]] = []  
-    file: Optional[List[str]] = []    
-    user_id: Optional[str] = None
+    query: str | None = None
+    bloque: list[str] | None = []
+    file: list[str] | None = []
+    user_id: str | None = None
 
 
 ##############

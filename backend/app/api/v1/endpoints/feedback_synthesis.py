@@ -1,11 +1,12 @@
-from pydantic import BaseModel
-from typing import Optional
-from fastapi import APIRouter, HTTPException
-from app.utils.ai_services import AzureServices
-from datetime import datetime
 import os
 import uuid
-from dotenv import load_dotenv, find_dotenv
+
+from dotenv import find_dotenv, load_dotenv
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+
+from app.utils.ai_services import AzureServices
+
 load_dotenv(find_dotenv())
 
 router_interaction= APIRouter()
@@ -20,15 +21,15 @@ collection= "Feedbacks"
 cosmos = AzureServices.CosmosDB(connection_string=connection_string, db_name= db_name, collection_names= collection)
 
 class Request(BaseModel):
-    user_email: Optional[str]
-    query: Optional[str]
-    model: Optional[str]
-    results: Optional[list]
-    stars_graph: Optional[int]
-    feed_graph: Optional[str]
-    stars_synthe: Optional[int]
-    feed_synthe: Optional[str]
-    synthesis: Optional[str]
+    user_email: str | None
+    query: str | None
+    model: str | None
+    results: list | None
+    stars_graph: int | None
+    feed_graph: str | None
+    stars_synthe: int | None
+    feed_synthe: str | None
+    synthesis: str | None
 
 @router_interaction.post("/feedbacks")
 def feed_back(request: Request):
@@ -50,7 +51,7 @@ def feed_back(request: Request):
     except Exception as e:
         # Puedes imprimir el error o loguearlo según tu necesidad
         print(f"Error al insertar en CosmosDB: {e}")
-        raise HTTPException(status_code=500, detail="Error al guardar el feedback en la base de datos")
+        raise HTTPException(status_code=500, detail="Error al guardar el feedback en la base de datos") from e
 
     return {"message": "Feedback guardado con éxito", "feedback_id": feedback_id}
 
@@ -73,7 +74,7 @@ def update_graph_feedback(update: UpdateGraphRequest):
         return {"message": "Campos stars_graph y feed_graph actualizados con éxito"}
     except Exception as e:
         print(f"Error al actualizar feedback: {e}")
-        raise HTTPException(status_code=500, detail="Error al actualizar el feedbackde grafo")
+        raise HTTPException(status_code=500, detail="Error al actualizar el feedbackde grafo") from e
 
 ##### Modificar variables de synthesis #####
 class UpdateSyntheRequest(BaseModel):
@@ -81,7 +82,7 @@ class UpdateSyntheRequest(BaseModel):
     synthesis: str
 
 @router_synthe.put("/feedbacks/synthe")
-def update_synthe_feedback(update: UpdateSyntheRequest):
+def update_synthe_content(update: UpdateSyntheRequest):
     filter_query = {"_id": update.feedback_id}
     update_fields = {
         "synthesis": update.synthesis
@@ -91,7 +92,7 @@ def update_synthe_feedback(update: UpdateSyntheRequest):
         return {"message": "Campo synthesis actualizado con éxito"}
     except Exception as e:
         print(f"Error al actualizar feedback: {e}")
-        raise HTTPException(status_code=500, detail="Error al actualizar el feedback de la sintesis")
+        raise HTTPException(status_code=500, detail="Error al actualizar el feedback de la sintesis") from e
 
 
 ## Modificar las estrellas y feedback  de sistesis ##########
@@ -102,7 +103,7 @@ class UpdateStatsSyntheRequest(BaseModel):
     feed_synthe: str
 
 @router_stats_synthe.put("/feedbacks/stat_synthe")
-def update_synthe_feedback(update: UpdateStatsSyntheRequest):
+def update_synthe_stats(update: UpdateStatsSyntheRequest):
     filter_query = {"_id": update.feedback_id}
     update_fields = {
         "stars_synthe": update.stars_synthe,
@@ -113,4 +114,4 @@ def update_synthe_feedback(update: UpdateStatsSyntheRequest):
         return {"message": "Campos stars_synthe, feed_synthe y synthesis actualizados con éxito"}
     except Exception as e:
         print(f"Error al actualizar feedback: {e}")
-        raise HTTPException(status_code=500, detail="Error al actualizar el feedback")
+        raise HTTPException(status_code=500, detail="Error al actualizar el feedback") from e

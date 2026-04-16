@@ -1,13 +1,15 @@
-from pydantic import BaseModel
-from typing import Optional
-from fastapi import APIRouter
-from app.utils.ai_services import AzureServices
-from app.services.rag_service_sentencias import RAGPipelineSentencias
-from app.services.rag_service_audiencias import RAGPipelineAudiencias
-from datetime import datetime
 import os
-from dotenv import load_dotenv, find_dotenv
 import uuid
+from datetime import datetime
+
+from dotenv import find_dotenv, load_dotenv
+from fastapi import APIRouter
+from pydantic import BaseModel
+
+from app.services.rag_service_audiencias import RAGPipelineAudiencias
+from app.services.rag_service_sentencias import RAGPipelineSentencias
+from app.utils.ai_services import AzureServices
+
 load_dotenv(find_dotenv())
 
 router= APIRouter()
@@ -24,13 +26,13 @@ search_audiencias = RAGPipelineAudiencias()
 
 class RequestSentencias(BaseModel):
     query: str
-    user_email: Optional[str]
-    index: Optional[str] = "index_sentencias"
+    user_email: str | None
+    index: str | None = "index_sentencias"
 
 class RequestAudiencias(BaseModel):
     query: str
-    user_email: Optional[str]
-    index: Optional[str] = "index_audiencias"
+    user_email: str | None
+    index: str | None = "index_audiencias"
 
 @router.post("/chat_ask_sentencias")
 def chat_ask_sentencias(request:RequestSentencias):
@@ -45,7 +47,7 @@ def chat_ask_sentencias(request:RequestSentencias):
         "timestamp": datetime.now()
     }
     cosmos.insert_message(user_message, collection)
-    
+
 
     # print("PIPELINE RAW RESPONSE:",response.model_dump())
 
@@ -59,7 +61,7 @@ def chat_ask_sentencias(request:RequestSentencias):
                 "sources": f"{response.sources}",
                 "feed": 0,
                 "timestamp": datetime.now()
-                
+
             }
     cosmos.insert_message(bot_message, collection)
     return {
@@ -80,7 +82,7 @@ def chat_ask_audiencias(request:RequestAudiencias):
         "timestamp": datetime.now()
     }
     cosmos.insert_message(user_message, collection)
-    
+
 
     # print("PIPELINE RAW RESPONSE:",response.model_dump())
 
