@@ -328,8 +328,6 @@ Usuario
 
 Configurables en `.env` o variables del navegador:
 ```
-VITE_BACKEND_HOST    # Host del backend (default: localhost)
-VITE_BACKEND_PORT    # Puerto del backend (default: 8765)
 VITE_BACKEND_URL_V1  # URL completa backend v1
 ```
 

@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import ChatTab from "./components/ChatTab";
 import SimpleSearchTab from "./components/SimpleSearchTab";
-import SherlockTab from "./components/SherlockTab";
 import AboutTab from "./components/AboutTab";
 import DashboardTab from "./components/DashboardTab";
-import TermsOfUse from "./components/TermsOfUse";
 import EmailPrompt from "./components/EmailPrompt";
 import "./App.css";
 import {
@@ -161,12 +159,12 @@ export default function App() {
                   >
                     Acerca de
                   </button>
-                  <button
+                  {/* <button
                     className={`tab-btn${tab === "dashboard" ? " active" : ""}`}
                     onClick={() => setTab("dashboard")}
                   >
                     Indicadores de uso
-                  </button>
+                  </button> */}
                 </nav>
                 {tab === "chat" && (
                   <ChatTab
@@ -179,7 +177,6 @@ export default function App() {
                     setSelectedValue={setSelectedValue}
                   />
                 )}
-                {/* {tab === "sherlock" && <SherlockTab userEmail={userEmail} />} */}
                 {tab === "search" && (
                   <SimpleSearchTab
                     query={query}

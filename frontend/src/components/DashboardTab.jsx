@@ -15,8 +15,8 @@ import {
   Cell,
   Legend
 } from "recharts";
+import { BACKEND_URL_V1 } from "../api";
 
-import { BACKEND_URL } from "../api";
 
 function DashboardTab() {
   const [metrics, setMetrics] = useState(null);
@@ -24,7 +24,7 @@ function DashboardTab() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`${BACKEND_URL}/api/v1/dashboard/metrics`)
+    fetch(`${BACKEND_URL_V1}/api/v1/dashboard/metrics`)
       .then((res) => res.json())
       .then((data) => {
         setMetrics(data);

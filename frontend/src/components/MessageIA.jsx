@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Drawer, Popover } from "antd";
-import env from "../config/enviroment";
+import { ENV as env } from "../config/env";
 import "../setup-pdf";
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
@@ -31,11 +31,11 @@ export default function MessageIA({ text, isLoading, response }) {
       document,
       urlPDF: document.bloque.includes("https://")
         ? document.bloque
-        : env.URL_BLOB +
+        : env.VITE_URL_BLOB +
           document.bloque +
           "/" +
           document.document_name +
-          env.BLOB_TOKEN,
+          env.VITE_BLOB_TOKEN,
     });
   }
 
