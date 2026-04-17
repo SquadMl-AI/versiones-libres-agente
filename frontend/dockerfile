@@ -1,26 +1,27 @@
 # -----------------------------
 # Etapa 1: Build con Vite
 # -----------------------------
-FROM node:20-alpine AS build
+FROM node:22-alpine AS build
 
 WORKDIR /app
 
-# Copiar dependencias
 COPY package.json package-lock.json ./
 RUN npm install
 
-# Copiar el resto del proyecto
 COPY . .
 
-# Compilar el proyecto
 RUN npm run build
 
 # -----------------------------
 # Etapa 2: Servir con NGINX
 # -----------------------------
-FROM nginx:alpine AS production
+FROM nginx:alpine3.21 AS production
 
-# Copiar archivos compilados al path por defecto de NGINX
 COPY --from=build /app/dist /usr/share/nginx/html
 
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
 EXPOSE 80
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
