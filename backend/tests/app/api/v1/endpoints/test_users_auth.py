@@ -1,5 +1,6 @@
 import pytest
-from conftest import load_module_from_source, setup_app_stubs, DummyHTTPException
+
+from conftest import DummyHTTPException, load_module_from_source, setup_app_stubs
 
 
 def test_get_user_auth_returns_access_for_matching_email():

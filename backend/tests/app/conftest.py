@@ -169,16 +169,16 @@ def setup_app_stubs():
     ensure_module("app.api.v1")
     ensure_module("app.api.v1")
     ensure_module("app.api.v1.endpoints")
-    
+
     endpoints = ["advance_search", "blobs", "chat_ask", "feed_messages", "feedback_synthesis", "history_session", "synthesis", "users_auth"]
     for ep in endpoints:
         stub_module(f"app.api.v1.endpoints.{ep}", router=DummyAPIRouter())
-        
+
     stub_module("app.api.v1.api", api_router=DummyAPIRouter())
     api_module = sys.modules["app.api.v1.api"]
     for route_str in ['/chat_ask', '/rag/sentencias', '/rag/audiencias', '/synthesis', '/advance_search', '/sessions', '/folders', '/files', '/users_auth', '/feedbacks', '/feed_message']:
         api_module.api_router.routes.append(DummyRoute(route_str))
-        
+
     stub_module("app.services.search_category_service", SearchCategoryChunks=DummySearchCategoryChunks)
     stub_module("app.services.synthesis_service", SynthesisCategoryChunks=DummySynthesisCategoryChunks)
     stub_module("app.services.rag_service_audiencias", RAGPipelineAudiencias=type("R", (), {"rag_pipeline": lambda self, **kwargs: type("Resp", (), {"model":"m","answer":"a","sources":[],"model_dump":lambda self:{"model":"m","answer":"a","sources":[]}})() }))

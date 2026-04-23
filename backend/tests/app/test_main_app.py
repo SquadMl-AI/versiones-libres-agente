@@ -1,4 +1,5 @@
-from conftest import setup_app_stubs, load_module_from_source
+from conftest import load_module_from_source, setup_app_stubs
+
 
 def test_main_app_initialization():
     setup_app_stubs()

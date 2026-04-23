@@ -8,20 +8,20 @@ instaladas (requirements.txt). En CI se ejecutan en el job 'test'.
 """
 
 def test_app_creates():
-    from conftest import setup_app_stubs, load_module_from_source
+    from conftest import load_module_from_source, setup_app_stubs
     setup_app_stubs()
     m = load_module_from_source('main.py', 'src_main_smoke')
     assert m.app is not None
     assert m.app.title == 'Memorias de Justicia y Paz API'
 
 def test_api_router_has_routes():
-    from conftest import setup_app_stubs, load_module_from_source
+    from conftest import load_module_from_source, setup_app_stubs
     setup_app_stubs()
     m = load_module_from_source('api/v1/api.py', 'src_api_smoke')
     assert len(m.api_router.routes) > 0
 
 def test_expected_prefixes_registered():
-    from conftest import setup_app_stubs, load_module_from_source
+    from conftest import load_module_from_source, setup_app_stubs
     setup_app_stubs()
     m = load_module_from_source('main.py', 'src_main_smoke_2')
     route_paths = [r.path for r in m.app.routes]

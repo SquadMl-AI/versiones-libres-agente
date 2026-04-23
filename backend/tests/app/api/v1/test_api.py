@@ -1,6 +1,7 @@
-import types
 import sys
-from conftest import load_module_from_source, setup_common_stubs, DummyRouter
+import types
+
+from conftest import DummyRouter, load_module_from_source, setup_common_stubs
 
 
 def test_api_router_includes_expected_endpoints():
@@ -12,9 +13,13 @@ def test_api_router_includes_expected_endpoints():
     for name in ['advance_search','blobs','chat_ask','feed_messages','feedback_synthesis','history_session','synthesis','users_auth']:
         mod = types.ModuleType(f'app.api.v1.endpoints.{name}')
         if name == 'blobs':
-            mod.router_folders = DummyRouter(); mod.router_files = DummyRouter()
+            mod.router_folders = DummyRouter()
+            mod.router_files = DummyRouter()
         elif name == 'feedback_synthesis':
-            mod.router_interaction = DummyRouter(); mod.router_graph = DummyRouter(); mod.router_synthe = DummyRouter(); mod.router_stats_synthe = DummyRouter()
+            mod.router_interaction = DummyRouter()
+            mod.router_graph = DummyRouter()
+            mod.router_synthe = DummyRouter()
+            mod.router_stats_synthe = DummyRouter()
         else:
             mod.router = DummyRouter()
         sys.modules[f'app.api.v1.endpoints.{name}'] = mod
