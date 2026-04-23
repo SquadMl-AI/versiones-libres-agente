@@ -7,70 +7,70 @@ from conftest import load_module_from_source, setup_app_stubs
 
 
 def test_azure_services_full():
-    sys.modules.pop('numpy', None)
-    sys.modules.pop('pandas', None)
+    sys.modules.pop("numpy", None)
+    sys.modules.pop("pandas", None)
     setup_app_stubs()
 
     # Needs to mock Azure modules
-    sys.modules['azure.storage.blob'] = types.ModuleType('azure.storage.blob')
-    sys.modules['azure.storage.blob'].BlobServiceClient = MagicMock()
-    sys.modules['azure.storage.blob'].generate_blob_sas = MagicMock()
-    sys.modules['azure.storage.blob'].BlobSasPermissions = MagicMock()
+    sys.modules["azure.storage.blob"] = types.ModuleType("azure.storage.blob")
+    sys.modules["azure.storage.blob"].BlobServiceClient = MagicMock()
+    sys.modules["azure.storage.blob"].generate_blob_sas = MagicMock()
+    sys.modules["azure.storage.blob"].BlobSasPermissions = MagicMock()
 
-    sys.modules['azure.cosmos'] = types.ModuleType('azure.cosmos')
-    sys.modules['azure.cosmos'].CosmosClient = MagicMock()
-    sys.modules['azure.cosmos.exceptions'] = types.ModuleType('azure.cosmos.exceptions')
-    sys.modules['azure.cosmos.exceptions'].CosmosResourceNotFoundError = Exception
+    sys.modules["azure.cosmos"] = types.ModuleType("azure.cosmos")
+    sys.modules["azure.cosmos"].CosmosClient = MagicMock()
+    sys.modules["azure.cosmos.exceptions"] = types.ModuleType("azure.cosmos.exceptions")
+    sys.modules["azure.cosmos.exceptions"].CosmosResourceNotFoundError = Exception
 
-    sys.modules['azure.search.documents'] = types.ModuleType('azure.search.documents')
-    sys.modules['azure.search.documents'].SearchClient = MagicMock()
-    sys.modules['azure.search.documents.indexes'] = types.ModuleType('azure.search.documents.indexes')
-    sys.modules['azure.search.documents.indexes'].SearchIndexClient = MagicMock
-    sys.modules['azure.search.documents.indexes.models'] = types.ModuleType('azure.search.documents.indexes.models')
-    sys.modules['azure.search.documents.indexes.models'].SearchField = MagicMock
-    sys.modules['azure.search.documents.indexes.models'].SearchIndex = MagicMock
-    sys.modules['azure.search.documents.indexes.models'].SemanticSearch = MagicMock
-    sys.modules['azure.search.documents.models'] = types.ModuleType('azure.search.documents.models')
-    sys.modules['azure.search.documents.models'].VectorizedQuery = MagicMock
-    sys.modules['azure.search.documents.models'].QueryType = MagicMock()
+    sys.modules["azure.search.documents"] = types.ModuleType("azure.search.documents")
+    sys.modules["azure.search.documents"].SearchClient = MagicMock()
+    sys.modules["azure.search.documents.indexes"] = types.ModuleType("azure.search.documents.indexes")
+    sys.modules["azure.search.documents.indexes"].SearchIndexClient = MagicMock
+    sys.modules["azure.search.documents.indexes.models"] = types.ModuleType("azure.search.documents.indexes.models")
+    sys.modules["azure.search.documents.indexes.models"].SearchField = MagicMock
+    sys.modules["azure.search.documents.indexes.models"].SearchIndex = MagicMock
+    sys.modules["azure.search.documents.indexes.models"].SemanticSearch = MagicMock
+    sys.modules["azure.search.documents.models"] = types.ModuleType("azure.search.documents.models")
+    sys.modules["azure.search.documents.models"].VectorizedQuery = MagicMock
+    sys.modules["azure.search.documents.models"].QueryType = MagicMock()
 
-    sys.modules['azure.ai.documentintelligence'] = types.ModuleType('azure.ai.documentintelligence')
-    sys.modules['azure.ai.documentintelligence'].DocumentIntelligenceClient = MagicMock()
-    sys.modules['azure.ai.documentintelligence.models'] = types.ModuleType('azure.ai.documentintelligence.models')
-    sys.modules['azure.ai.documentintelligence.models'].AnalyzeDocumentRequest = MagicMock
+    sys.modules["azure.ai.documentintelligence"] = types.ModuleType("azure.ai.documentintelligence")
+    sys.modules["azure.ai.documentintelligence"].DocumentIntelligenceClient = MagicMock()
+    sys.modules["azure.ai.documentintelligence.models"] = types.ModuleType("azure.ai.documentintelligence.models")
+    sys.modules["azure.ai.documentintelligence.models"].AnalyzeDocumentRequest = MagicMock
 
-    sys.modules['azure.ai.formrecognizer'] = types.ModuleType('azure.ai.formrecognizer')
-    sys.modules['azure.ai.formrecognizer'].DocumentAnalysisClient = MagicMock
+    sys.modules["azure.ai.formrecognizer"] = types.ModuleType("azure.ai.formrecognizer")
+    sys.modules["azure.ai.formrecognizer"].DocumentAnalysisClient = MagicMock
 
-    sys.modules['azure.core.credentials'] = types.ModuleType('azure.core.credentials')
-    sys.modules['azure.core.credentials'].AzureKeyCredential = MagicMock
+    sys.modules["azure.core.credentials"] = types.ModuleType("azure.core.credentials")
+    sys.modules["azure.core.credentials"].AzureKeyCredential = MagicMock
 
-    sys.modules['openai'] = types.ModuleType('openai')
-    sys.modules['openai'].AzureOpenAI = MagicMock()
+    sys.modules["openai"] = types.ModuleType("openai")
+    sys.modules["openai"].AzureOpenAI = MagicMock()
 
-    sys.modules['langchain_openai'] = types.ModuleType('langchain_openai')
-    sys.modules['langchain_openai'].AzureChatOpenAI = MagicMock
-    sys.modules['langchain_openai'].AzureOpenAIEmbeddings = MagicMock
+    sys.modules["langchain_openai"] = types.ModuleType("langchain_openai")
+    sys.modules["langchain_openai"].AzureChatOpenAI = MagicMock
+    sys.modules["langchain_openai"].AzureOpenAIEmbeddings = MagicMock
 
-    sys.modules['pymongo'] = types.ModuleType('pymongo')
-    sys.modules['pymongo.errors'] = types.ModuleType('pymongo.errors')
-    sys.modules['pymongo'].MongoClient = MagicMock(return_value=MagicMock())
-    sys.modules['pymongo.errors'].ServerSelectionTimeoutError = Exception
+    sys.modules["pymongo"] = types.ModuleType("pymongo")
+    sys.modules["pymongo.errors"] = types.ModuleType("pymongo.errors")
+    sys.modules["pymongo"].MongoClient = MagicMock(return_value=MagicMock())
+    sys.modules["pymongo.errors"].ServerSelectionTimeoutError = Exception
 
-    sys.modules['fitz'] = types.ModuleType('fitz')
+    sys.modules["fitz"] = types.ModuleType("fitz")
     mock_pdf = MagicMock()
     mock_pdf.page_count = 1
-    mock_pdf.tobytes.return_value = b'data'
-    sys.modules['fitz'].open = MagicMock(return_value=mock_pdf)
+    mock_pdf.tobytes.return_value = b"data"
+    sys.modules["fitz"].open = MagicMock(return_value=mock_pdf)
 
-    with patch('os.getenv', side_effect=lambda k: "fake"):
-        module = load_module_from_source('utils/ai_services.py', 'src_ai_services_full')
+    with patch("os.getenv", side_effect=lambda k: "fake"):
+        module = load_module_from_source("utils/ai_services.py", "src_ai_services_full")
 
         # 1. BlobStorage
         blob_storage = module.AzureServices.AzureBlobStorage()
         blob_storage._get_blob_service_client = MagicMock()
-        blob_storage._get_blob_service_client().get_container_client.return_value.get_blob_client.return_value.download_blob.return_value.readall.return_value = b'data'
-        assert blob_storage.download_file("file") == b'data'
+        blob_storage._get_blob_service_client().get_container_client.return_value.get_blob_client.return_value.download_blob.return_value.readall.return_value = b"data"
+        assert blob_storage.download_file("file") == b"data"
 
         blob_storage._get_blob_properties = MagicMock(return_value={"size": 100})
         blob_storage._get_blob_service_client = MagicMock(side_effect=Exception("err"))
@@ -97,13 +97,13 @@ def test_azure_services_full():
 
         di.document_analysis_client.begin_analyze_document.return_value = mock_poller
 
-        txt, tabs, pages, pl_res = di.extract_doc_text(file_obj=b'data')
+        txt, tabs, pages, pl_res = di.extract_doc_text(file_obj=b"data")
         assert txt == "Page 1:\ntext"
 
         mock_err_poller = MagicMock()
         mock_err_poller.result.side_effect = Exception("err")
         di.document_analysis_client.begin_analyze_document.return_value = mock_err_poller
-        di.extract_doc_text(file_obj=b'data')
+        di.extract_doc_text(file_obj=b"data")
 
         # 3. AzureOpenAI
         aoai = module.AzureServices.AzureOpenAI()
@@ -160,12 +160,17 @@ def test_azure_services_full():
         # 5. AzureIASearch
         search = module.AzureServices.AzureIASearch()
 
-        sys.modules['azure.search.documents'].SearchClient.return_value.search.return_value = [{"@search.score": 1, "content": "c"}]
+        sys.modules["azure.search.documents"].SearchClient.return_value.search.return_value = [
+            {"@search.score": 1, "content": "c"}
+        ]
 
-        with patch.object(module.AzureServices.AzureOpenAI, 'get_embedding', return_value=[0.1]*1536):
+        with patch.object(module.AzureServices.AzureOpenAI, "get_embedding", return_value=[0.1] * 1536):
             res = search.hybrid_search("q", "idx")
             assert len(res) == 1
 
-        sys.modules['azure.search.documents'].SearchClient.return_value.search.side_effect = Exception("err")
-        with patch.object(module.AzureServices.AzureOpenAI, 'get_embedding', return_value=[0.1]*1536), contextlib.suppress(Exception):
+        sys.modules["azure.search.documents"].SearchClient.return_value.search.side_effect = Exception("err")
+        with (
+            patch.object(module.AzureServices.AzureOpenAI, "get_embedding", return_value=[0.1] * 1536),
+            contextlib.suppress(Exception),
+        ):
             search.hybrid_search("q", "idx")

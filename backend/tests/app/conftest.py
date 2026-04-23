@@ -1,4 +1,3 @@
-
 import importlib.util
 import sys
 import types
@@ -27,6 +26,7 @@ class DummyRoute:
     def __init__(self, path):
         self.path = path
 
+
 class DummyRouter:
     def __init__(self):
         self.routes = []
@@ -36,24 +36,27 @@ class DummyRouter:
         def decorator(func):
             self.routes.append(DummyRoute(path))
             return func
+
         return decorator
 
     def get(self, path):
         def decorator(func):
             self.routes.append(DummyRoute(path))
             return func
+
         return decorator
 
     def put(self, path):
         def decorator(func):
             self.routes.append(DummyRoute(path))
             return func
+
         return decorator
 
     def include_router(self, router, prefix="", tags=None):
         self.included.append({"router": router, "prefix": prefix, "tags": tags or []})
         self.routes.append(DummyRoute(prefix))
-        for route in getattr(router, 'routes', []):
+        for route in getattr(router, "routes", []):
             self.routes.append(DummyRoute(prefix + getattr(route, "path", "")))
 
 
@@ -82,12 +85,15 @@ class DummyFastAPI:
         for k, v in kwargs.items():
             setattr(self, k, v)
         self.routes = []
+
     def include_router(self, router, prefix="", *args, **kwargs):
         self.routes.append(DummyRoute(prefix))
-        for route in getattr(router, 'routes', []):
+        for route in getattr(router, "routes", []):
             self.routes.append(DummyRoute(prefix + getattr(route, "path", "")))
+
     def add_middleware(self, *args, **kwargs):
         pass
+
 
 class DummyAPIRouter(DummyRouter):
     pass
@@ -127,7 +133,14 @@ class DummyCosmos:
         self.inserted.append({"data": data, "collection_name": collection_name, "collection": collection})
 
     def update_message(self, filter_field, update_field, collection_name=None, collection=None):
-        self.updated.append({"filter": filter_field, "update": update_field, "collection_name": collection_name, "collection": collection})
+        self.updated.append(
+            {
+                "filter": filter_field,
+                "update": update_field,
+                "collection_name": collection_name,
+                "collection": collection,
+            }
+        )
 
     def get_messages_by_user(self, user_email, collection_name):
         return self.messages
@@ -149,12 +162,15 @@ class DummyBlobStorage:
 class DummyAzureServices:
     AzureBlobStorage = DummyBlobStorage
     CosmosDB = DummyCosmos
+
     class AzureOpenAI:
         def __init__(self, *args, **kwargs):
             self.client_embeddings = object()
+
     class AzureIASearch:
         def __init__(self, *args, **kwargs):
             pass
+
     class DocumentIntelligence:
         def __init__(self, *args, **kwargs):
             pass
@@ -170,19 +186,76 @@ def setup_app_stubs():
     ensure_module("app.api.v1")
     ensure_module("app.api.v1.endpoints")
 
-    endpoints = ["advance_search", "blobs", "chat_ask", "feed_messages", "feedback_synthesis", "history_session", "synthesis", "users_auth"]
+    endpoints = [
+        "advance_search",
+        "blobs",
+        "chat_ask",
+        "feed_messages",
+        "feedback_synthesis",
+        "history_session",
+        "synthesis",
+        "users_auth",
+    ]
     for ep in endpoints:
         stub_module(f"app.api.v1.endpoints.{ep}", router=DummyAPIRouter())
 
     stub_module("app.api.v1.api", api_router=DummyAPIRouter())
     api_module = sys.modules["app.api.v1.api"]
-    for route_str in ['/chat_ask', '/rag/sentencias', '/rag/audiencias', '/synthesis', '/advance_search', '/sessions', '/folders', '/files', '/users_auth', '/feedbacks', '/feed_message']:
+    for route_str in [
+        "/chat_ask",
+        "/rag/sentencias",
+        "/rag/audiencias",
+        "/synthesis",
+        "/advance_search",
+        "/sessions",
+        "/folders",
+        "/files",
+        "/users_auth",
+        "/feedbacks",
+        "/feed_message",
+    ]:
         api_module.api_router.routes.append(DummyRoute(route_str))
 
     stub_module("app.services.search_category_service", SearchCategoryChunks=DummySearchCategoryChunks)
     stub_module("app.services.synthesis_service", SynthesisCategoryChunks=DummySynthesisCategoryChunks)
-    stub_module("app.services.rag_service_audiencias", RAGPipelineAudiencias=type("R", (), {"rag_pipeline": lambda self, **kwargs: type("Resp", (), {"model":"m","answer":"a","sources":[],"model_dump":lambda self:{"model":"m","answer":"a","sources":[]}})() }))
-    stub_module("app.services.rag_service_sentencias", RAGPipelineSentencias=type("R", (), {"rag_pipeline": lambda self, **kwargs: type("Resp", (), {"model":"m","answer":"a","sources":[],"model_dump":lambda self:{"model":"m","answer":"a","sources":[]}})() }))
+    stub_module(
+        "app.services.rag_service_audiencias",
+        RAGPipelineAudiencias=type(
+            "R",
+            (),
+            {
+                "rag_pipeline": lambda self, **kwargs: type(
+                    "Resp",
+                    (),
+                    {
+                        "model": "m",
+                        "answer": "a",
+                        "sources": [],
+                        "model_dump": lambda self: {"model": "m", "answer": "a", "sources": []},
+                    },
+                )()
+            },
+        ),
+    )
+    stub_module(
+        "app.services.rag_service_sentencias",
+        RAGPipelineSentencias=type(
+            "R",
+            (),
+            {
+                "rag_pipeline": lambda self, **kwargs: type(
+                    "Resp",
+                    (),
+                    {
+                        "model": "m",
+                        "answer": "a",
+                        "sources": [],
+                        "model_dump": lambda self: {"model": "m", "answer": "a", "sources": []},
+                    },
+                )()
+            },
+        ),
+    )
     stub_module("app.utils.ai_services", AzureServices=DummyAzureServices)
 
 
