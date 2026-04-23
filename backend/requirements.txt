@@ -78,7 +78,7 @@ langgraph-checkpoint==4.0.1
 langgraph-prebuilt==1.0.8
 langgraph-sdk==0.3.12
 langsmith==0.7.32
-lxml==6.0.2
+lxml==6.1.0
 MarkupSafe==3.0.3
 marshmallow==3.26.2
 matplotlib==3.10.8
@@ -128,7 +128,7 @@ pytest==9.0.3
 pytest-cov==7.1.0
 python-dateutil==2.9.0.post0
 python-docx==1.2.0
-python-dotenv==1.2.1
+python-dotenv==1.2.2
 python-multipart==0.0.26
 pytz==2026.1.post1
 pyvis==0.3.2
