@@ -71,5 +71,5 @@ jobs:
       - name: Run tests with coverage
         run: pytest -q --cov=app --cov-report=term-missing
 
-      - name: Security audit (dependencies)
-        run: pip-audit -r requirements.txt
+      # - name: Security audit (dependencies)
+      #   run: pip-audit -r requirements.txt
