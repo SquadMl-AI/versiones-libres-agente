@@ -35,6 +35,7 @@ def setup_mock_service():
     sys.modules["utils"] = types.ModuleType("utils")
     sys.modules["utils.ai_services"] = types.ModuleType("utils.ai_services")
     sys.modules["openai"] = types.ModuleType("openai")
+    sys.modules["openai"].AzureOpenAI = MagicMock
     mock_azure = MagicMock()
     mock_azure.AzureOpenAI.return_value = mock_aoai
     mock_azure.AzureIASearch.return_value = mock_search
