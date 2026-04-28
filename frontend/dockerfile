@@ -1,0 +1,27 @@
+# -----------------------------
+# Etapa 1: Build con Vite
+# -----------------------------
+FROM node:22-alpine AS build
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+# -----------------------------
+# Etapa 2: Servir con NGINX
+# -----------------------------
+FROM nginx:alpine3.21 AS production
+
+COPY --from=build /app/dist /usr/share/nginx/html
+
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+EXPOSE 80
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
