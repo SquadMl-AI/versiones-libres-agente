@@ -42,10 +42,38 @@ jobs:
       - name: Ruff format check
         run: ruff format --check .
 
+  duplication:
+    name: Duplicate Code Check
+    runs-on: ubuntu-latest
+    needs: lint
+
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check duplicated code
+        run: |
+          npx jscpd \
+            --path . \
+            --languages python \
+            --min-lines 8 \
+            --min-tokens 80 \
+            --threshold 0 \
+            --reporters console
+
   test:
     name: Tests
     runs-on: ubuntu-latest
-    needs: lint
+    needs: duplication
 
     defaults:
       run:
@@ -70,6 +98,4 @@ jobs:
 
       - name: Run tests with coverage
         run: pytest -q --cov=app --cov-report=term-missing
-
-      # - name: Security audit (dependencies)
-      #   run: pip-audit -r requirements.txt
+        
