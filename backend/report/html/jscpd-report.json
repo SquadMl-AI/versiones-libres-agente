@@ -1,0 +1,714 @@
+{
+  "statistics": {
+    "detectionDate": "2026-04-29T13:00:44.087Z",
+    "formats": {
+      "python": {
+        "sources": {
+          "app/api/v1/endpoints/users_auth.py": {
+            "lines": 40,
+            "tokens": 373,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/api/v1/endpoints/synthesis.py": {
+            "lines": 27,
+            "tokens": 172,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/api/v1/endpoints/history_session.py": {
+            "lines": 25,
+            "tokens": 215,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 13,
+            "duplicatedTokens": 102,
+            "percentage": 52,
+            "percentageTokens": 47.44,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/api/v1/endpoints/feed_messages.py": {
+            "lines": 46,
+            "tokens": 315,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/api/v1/endpoints/feedback_synthesis.py": {
+            "lines": 118,
+            "tokens": 1013,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/api/v1/endpoints/chat_ask.py": {
+            "lines": 102,
+            "tokens": 872,
+            "sources": 1,
+            "clones": 3,
+            "duplicatedLines": 67,
+            "duplicatedTokens": 616,
+            "percentage": 65.69,
+            "percentageTokens": 70.64,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/api/v1/endpoints/blobs.py": {
+            "lines": 31,
+            "tokens": 273,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/api/v1/endpoints/advance_search.py": {
+            "lines": 29,
+            "tokens": 219,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/api/v1/api.py": {
+            "lines": 25,
+            "tokens": 341,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/utils/index_config.py": {
+            "lines": 106,
+            "tokens": 733,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/utils/indexing_pipeline.py": {
+            "lines": 368,
+            "tokens": 3296,
+            "sources": 1,
+            "clones": 5,
+            "duplicatedLines": 51,
+            "duplicatedTokens": 603,
+            "percentage": 13.86,
+            "percentageTokens": 18.29,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/utils/ai_services.py": {
+            "lines": 696,
+            "tokens": 5386,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/services/synthesis_service.py": {
+            "lines": 220,
+            "tokens": 1593,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/services/search_category_service.py": {
+            "lines": 392,
+            "tokens": 3209,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/services/rag_service_sentencias.py": {
+            "lines": 254,
+            "tokens": 1706,
+            "sources": 1,
+            "clones": 7,
+            "duplicatedLines": 226,
+            "duplicatedTokens": 1516,
+            "percentage": 88.98,
+            "percentageTokens": 88.86,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/services/rag_service_audiencias.py": {
+            "lines": 261,
+            "tokens": 1734,
+            "sources": 1,
+            "clones": 6,
+            "duplicatedLines": 221,
+            "duplicatedTokens": 1435,
+            "percentage": 84.67,
+            "percentageTokens": 82.76,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/services/indexing_service.py": {
+            "lines": 22,
+            "tokens": 173,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/schemas/search.py": {
+            "lines": 73,
+            "tokens": 708,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/main.py": {
+            "lines": 25,
+            "tokens": 175,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/indexing.py": {
+            "lines": 52,
+            "tokens": 372,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 2912,
+          "tokens": 22878,
+          "sources": 20,
+          "clones": 11,
+          "duplicatedLines": 289,
+          "duplicatedTokens": 2136,
+          "percentage": 9.92,
+          "percentageTokens": 9.34,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "json": {
+        "sources": {
+          "app/kb_id_to_name.json": {
+            "lines": 31,
+            "tokens": 211,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/kb_id_to_documents.json": {
+            "lines": 228,
+            "tokens": 939,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 259,
+          "tokens": 1150,
+          "sources": 2,
+          "clones": 0,
+          "duplicatedLines": 0,
+          "duplicatedTokens": 0,
+          "percentage": 0,
+          "percentageTokens": 0,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      }
+    },
+    "total": {
+      "lines": 3171,
+      "tokens": 24028,
+      "sources": 22,
+      "clones": 11,
+      "duplicatedLines": 289,
+      "duplicatedTokens": 2136,
+      "percentage": 9.11,
+      "percentageTokens": 8.89,
+      "newDuplicatedLines": 0,
+      "newClones": 0
+    }
+  },
+  "duplicates": [
+    {
+      "format": "python",
+      "lines": 14,
+      "fragment": "from app.utils.ai_services import AzureServices\r\n\r\nload_dotenv(find_dotenv())\r\n\r\nrouter = APIRouter()\r\n\r\nconnection_string = os.getenv(\"AZURE_COSMOSDB_ENDPOINT\")\r\ndb_name = os.getenv(\"AZURE_COSMOSDB_DATABASE_NAME\")\r\ncollection = os.getenv(\"AZURE_COSMOSDB_COLLECTION_NAME\")\r\n\r\n\r\ncosmos = AzureServices.CosmosDB(connection_string=connection_string, db_name=db_name, collection_names=collection)\r\n\r\nsearch_sentencias",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app\\api\\v1\\endpoints\\chat_ask.py",
+        "start": 11,
+        "end": 24,
+        "startLoc": {
+          "line": 11,
+          "column": 1,
+          "position": 79
+        },
+        "endLoc": {
+          "line": 24,
+          "column": 18,
+          "position": 181
+        }
+      },
+      "secondFile": {
+        "name": "app\\api\\v1\\endpoints\\history_session.py",
+        "start": 6,
+        "end": 20,
+        "startLoc": {
+          "line": 6,
+          "column": 1,
+          "position": 33
+        },
+        "endLoc": {
+          "line": 20,
+          "column": 8,
+          "position": 137
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 28,
+      "fragment": ".rag_pipeline(\r\n        user_query=request.query, user_email=request.user_email, index_name=request.index\r\n    )\r\n\r\n    user_message = {\r\n        \"_id\": str(uuid.uuid4()),\r\n        \"user_id\": request.user_email,\r\n        \"type\": \"human\",\r\n        \"content\": request.query,\r\n        \"timestamp\": datetime.now(),\r\n    }\r\n    cosmos.insert_message(user_message, collection)\r\n\r\n    # print(\"PIPELINE RAW RESPONSE:\",response.model_dump())\r\n\r\n    bot_message = {\r\n        \"_id\": str(uuid.uuid4()),\r\n        \"user_id\": request.user_email,\r\n        \"type\": \"ai\",\r\n        \"query\": request.query,\r\n        \"model\": response.model,\r\n        \"content\": response.answer,\r\n        \"sources\": f\"{response.sources}\",\r\n        \"feed\": 0,\r\n        \"timestamp\": datetime.now(),\r\n    }\r\n    cosmos.insert_message(bot_message, collection)\r\n    return {\"message_id\": bot_message[\"_id\"], \"response\": response.model_dump()}",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app\\api\\v1\\endpoints\\chat_ask.py",
+        "start": 76,
+        "end": 103,
+        "startLoc": {
+          "line": 76,
+          "column": 18,
+          "position": 615
+        },
+        "endLoc": {
+          "line": 103,
+          "column": 2,
+          "position": 872
+        }
+      },
+      "secondFile": {
+        "name": "app\\api\\v1\\endpoints\\chat_ask.py",
+        "start": 43,
+        "end": 70,
+        "startLoc": {
+          "line": 43,
+          "column": 18,
+          "position": 323
+        },
+        "endLoc": {
+          "line": 70,
+          "column": 2,
+          "position": 580
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 18,
+      "fragment": ")\r\n\r\n        # Obtener número total de páginas para hacer los lotes\r\n        pdf_doc = fitz.open(stream=pdf_bytes, filetype=\"pdf\")\r\n        total_pages = pdf_doc.page_count\r\n        pdf_doc.close()\r\n\r\n        batch_size = 2000\r\n\r\n        for start in range(0, total_pages, batch_size):\r\n            end = min(start + batch_size, total_pages)\r\n            # Extraer lote de páginas (batch)\r\n            temp_pdf = fitz.open()\r\n            for page_num in range(start, end):\r\n                temp_pdf.insert_pdf(fitz.open(stream=pdf_bytes, filetype=\"pdf\"), from_page=page_num, to_page=page_num)\r\n            batch_bytes = temp_pdf.tobytes()\r\n            temp_pdf.close()\r\n        # 2. Extraer texto usando Azure Document Intelligence",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app\\utils\\indexing_pipeline.py",
+        "start": 93,
+        "end": 110,
+        "startLoc": {
+          "line": 93,
+          "column": 2,
+          "position": 817
+        },
+        "endLoc": {
+          "line": 110,
+          "column": 54,
+          "position": 999
+        }
+      },
+      "secondFile": {
+        "name": "app\\utils\\indexing_pipeline.py",
+        "start": 77,
+        "end": 95,
+        "startLoc": {
+          "line": 77,
+          "column": 5,
+          "position": 639
+        },
+        "endLoc": {
+          "line": 95,
+          "column": 55,
+          "position": 823
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 7,
+      "fragment": ".append(\r\n                {\r\n                    \"docnm_kwd\": blob.split(\"/\")[-1].replace(\".pdf\", \"\"),\r\n                    \"docnm\": blob.split(\"/\")[-1],\r\n                    \"bloque\": blob.split(\"/\")[0],\r\n                    \"kb_id\": kd_id,\r\n                    \"content\": tablas",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app\\utils\\indexing_pipeline.py",
+        "start": 142,
+        "end": 148,
+        "startLoc": {
+          "line": 142,
+          "column": 12,
+          "position": 1338
+        },
+        "endLoc": {
+          "line": 148,
+          "column": 7,
+          "position": 1417
+        }
+      },
+      "secondFile": {
+        "name": "app\\utils\\indexing_pipeline.py",
+        "start": 128,
+        "end": 134,
+        "startLoc": {
+          "line": 128,
+          "column": 10,
+          "position": 1195
+        },
+        "endLoc": {
+          "line": 134,
+          "column": 8,
+          "position": 1274
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 6,
+      "fragment": "texto = unicodedata.normalize(\"NFKD\", texto).encode(\"ASCII\", \"ignore\").decode(\"utf-8\")\r\n        texto = re.sub(r\"[^\\w\\s]\", \"\", texto)\r\n        texto = re.sub(r\"\\s+\", \" \", texto).strip()\r\n        return texto\r\n\r\n    # ======================================================================================",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app\\services\\rag_service_sentencias.py",
+        "start": 71,
+        "end": 76,
+        "startLoc": {
+          "line": 71,
+          "column": 9,
+          "position": 484
+        },
+        "endLoc": {
+          "line": 76,
+          "column": 89,
+          "position": 565
+        }
+      },
+      "secondFile": {
+        "name": "app\\utils\\indexing_pipeline.py",
+        "start": 232,
+        "end": 237,
+        "startLoc": {
+          "line": 232,
+          "column": 17,
+          "position": 2198
+        },
+        "endLoc": {
+          "line": 237,
+          "column": 6,
+          "position": 2279
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 17,
+      "fragment": "import ast\r\nimport json\r\nimport os\r\nimport re\r\nimport sys\r\nimport unicodedata\r\n\r\nfrom bs4 import BeautifulSoup\r\nfrom pydantic import BaseModel\r\n\r\n# Ajustar path para importaciones del proyecto\r\nsys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), \"..\")))\r\n\r\nfrom utils.ai_services import AzureServices\r\n\r\n# =================================================================================================\r\n#                                                           PIPELINE DEL SERVICIO RAG PARA AUDIENCIAS",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app\\services\\rag_service_audiencias.py",
+        "start": 1,
+        "end": 17,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 17,
+          "column": 102,
+          "position": 107
+        }
+      },
+      "secondFile": {
+        "name": "app\\services\\rag_service_sentencias.py",
+        "start": 1,
+        "end": 17,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 17,
+          "column": 102,
+          "position": 107
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 34,
+      "fragment": "# =================================================================================================\r\n\r\ndb = os.getenv(\"AZURE_COSMOSDB_DATABASE_NAME\")\r\ncollection = os.getenv(\"AZURE_COSMOSDB_COLLECTION_NAME\")\r\nconnection_string = os.getenv(\"AZURE_COSMOSDB_ENDPOINT\")\r\ncosmos = AzureServices.CosmosDB(\r\n    connection_string=connection_string,\r\n    db_name=db,\r\n    collection_names=collection,  # collection_names=\"Graphs_Users\"\r\n)\r\n\r\n\r\n# Modelos Pydantic para la validación de datos del request y response\r\nclass QueryRequest(BaseModel):\r\n    question: str\r\n    index_name: str\r\n\r\n\r\nclass Source(BaseModel):\r\n    id: str  # \"[fuente 1]\"\r\n    document_name: str\r\n    content: str\r\n    page_number: list[int]  # Lista de números de página donde se encuentra el contenido\r\n    bloque: str | None = None  # Bloque de información, si aplica\r\n    highlights: dict | None = None  # Lista de fragmentos destacados, si aplica\r\n\r\n\r\nclass RAGResponse(BaseModel):\r\n    model: str\r\n    answer: str\r\n    sources: list[Source]\r\n\r\n\r\nclass RAGPipelineAudiencias",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app\\services\\rag_service_audiencias.py",
+        "start": 18,
+        "end": 51,
+        "startLoc": {
+          "line": 18,
+          "column": 1,
+          "position": 110
+        },
+        "endLoc": {
+          "line": 51,
+          "column": 22,
+          "position": 342
+        }
+      },
+      "secondFile": {
+        "name": "app\\services\\rag_service_sentencias.py",
+        "start": 18,
+        "end": 51,
+        "startLoc": {
+          "line": 18,
+          "column": 1,
+          "position": 110
+        },
+        "endLoc": {
+          "line": 51,
+          "column": 22,
+          "position": 342
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 132,
+      "fragment": ":\r\n    \"\"\"\r\n    Clase que implementa un pipeline de Recuperación de Información y Generación de Respuestas (RAG)\r\n    utilizando Azure AI Search y Azure OpenAI.\r\n    \"\"\"\r\n\r\n    def __init__(self):\r\n        self.aoai_client = AzureServices.AzureOpenAI()\r\n        self.search_client = AzureServices.AzureIASearch()\r\n        self.cosmos = AzureServices.CosmosDB(\r\n            connection_string=connection_string, db_name=db, collection_names=collection\r\n        )\r\n\r\n    def normalize_text(self, query: str) -> str:\r\n        \"\"\"\r\n        Normaliza la query del usuario para mejorar la búsqueda y la generación de respuestas.\r\n        (lowercase, sin tildes, sin signos, sin html).\r\n        \"\"\"\r\n        soup = BeautifulSoup(query, \"html.parser\")\r\n        texto = soup.get_text(separator=\" \").lower()\r\n        texto = unicodedata.normalize(\"NFKD\", texto).encode(\"ASCII\", \"ignore\").decode(\"utf-8\")\r\n        texto = re.sub(r\"[^\\w\\s]\", \"\", texto)\r\n        texto = re.sub(r\"\\s+\", \" \", texto).strip()\r\n        return texto\r\n\r\n    # ======================================================================================\r\n    #  4. GENERACIÓN DE RESPUESTA CON CITAS (LÓGICA PRINCIPAL)\r\n    # ======================================================================================\r\n\r\n    def generate_cited_answer(self, query: str, history: list, retrieved_chunks: list[dict]) -> RAGResponse:\r\n        \"\"\"\r\n        Genera una respuesta con citas incrustadas y una lista de fuentes estructuradas.\r\n        \"\"\"\r\n        if not retrieved_chunks:\r\n            return RAGResponse(\r\n                answer=(\r\n                    \"Lo siento, no pude encontrar información relevante en los documentos para responder a tu pregunta.\"\r\n                ),\r\n                sources=[],\r\n            )\r\n\r\n        thresholds = [2, 1.5, 1]\r\n        top_retrieved_chunks = []\r\n\r\n        for threshold in thresholds:\r\n            top_retrieved_chunks = [\r\n                content for content in retrieved_chunks if content.get(\"@search.reranker_score\", 0) >= threshold\r\n            ]\r\n            if top_retrieved_chunks:\r\n                print(f\"✅ Se encontraron {len(top_retrieved_chunks)} resultados con score >= {threshold}\")\r\n                break\r\n            else:\r\n                print(f\"🔎 No se encontraron resultados con umbral semantic score >= {threshold}... (Bajandolo...)\")\r\n\r\n        if not top_retrieved_chunks:\r\n            print(\"⚠️ No se encontraron resultados relevantes con ningún umbral.\")\r\n            top_retrieved_chunks = []\r\n\r\n        print(f\"chunks completo -> {len(retrieved_chunks)}\")\r\n        print(f\"chunks filtrados -> {len(top_retrieved_chunks)}\")\r\n\r\n        # 1. Crear el contexto y el mapa de fuentes para el prompt\r\n        context_for_prompt = \"\"\r\n        sources_map = {}\r\n        for i, chunk in enumerate(top_retrieved_chunks, 1):\r\n            source_id = f\"[fuente {i}]\"\r\n            context_for_prompt += f\"{source_id}\\n\"\r\n            context_for_prompt += f\"Contenido: {chunk['content']}\\n\\n---\\n\\n\"\r\n\r\n            # Guardar la información completa de la fuente\r\n            sources_map[source_id] = Source(\r\n                id=source_id,\r\n                document_name=chunk.get(\"docnm\", \"\"),\r\n                content=chunk.get(\"content\", \"\"),\r\n                page_number=chunk.get(\"page_number\", []),\r\n                bloque=chunk.get(\"bloque\"),\r\n                highlights=chunk.get(\"@search.highlights\", {}),\r\n            )\r\n\r\n        # 2. Diseñar el prompt de sistema para forzar las citas\r\n        system_prompt = f\"\"\"\r\n        Eres un asistente inteligente. Genera un texto extenso del contenido de la base de\r\n        conocimientos para responder a la pregunta. Si hay suficiente información relevante en la\r\n        base de conocimientos, proporcione una respuesta extensa y completa. Enumere explícitamente\r\n        los datos relevantes de la base de conocimientos que respaldan su respuesta. Si todo el\r\n        contenido de la base de conocimientos es irrelevante para la pregunta, responde solo con:\r\n        «Lo siento, no pude responder a tu pregunta. Por favor, intenta formularla de nuevo».\r\n        Las respuestas deben tener en cuenta el contexto proporcionado por el historial del chat.\r\n\r\n        ### REGLAS DE CITACIÓN ESTRICTAS:\r\n\r\n        1. **Citas:** Al final de cada oración o párrafo que construyas usando información de una\r\n           fuente, DEBES citar la fuente usando su identificador, por ejemplo: `[fuente 1]`.\r\n        2. **Citas Múltiples:** Si combinas información de múltiples fuentes en una misma oración,\r\n           cita todas las fuentes relevantes, por ejemplo: `[fuente 1][fuente 3]`.\r\n        3. **Formato Obligatorio:** El único formato de cita permitido es `[fuente N]`, donde N es\r\n           el número de la fuente. Debe ser en minúsculas y con un solo espacio entre \"fuente\" y\r\n           el número.\r\n        4. **Ejemplos INCORRECTOS y Prohibidos:** No uses mayúsculas (`[Fuente 1]`), plurales\r\n           (`[fuentes 2]`), ni agrupes citas (`[fuente 1 y 3]`). Cita cada fuente de forma\r\n           individual.\r\n\r\n        ### REGLAS DE CONTENIDO Y PRECISIÓN:\r\n\r\n        1. **Advertencia sobre Cifras:** Si la pregunta del usuario solicita cifras exactas,\r\n           conteos, porcentajes o listados completos (por ejemplo: \"¿Cuántos casos hay?\",\r\n           \"Dame todos los nombres\", \"¿Cuál es el total de...?\", etc.), DEBES advertir al usuario\r\n           que la respuesta se basa exclusivamente en los fragmentos recuperados y no representa\r\n           necesariamente la totalidad de la información existente. Ejemplo de advertencia:\r\n           \"La información presentada corresponde únicamente a los fragmentos recuperados, por lo\r\n           que no debe tomarse como una cifra absoluta ni exhaustiva.\"\r\n        2. **No Inventar:** NUNCA inventes información. Si no encuentras información suficiente\r\n           para responder la pregunta, responde únicamente: «Lo siento, no pude responder a tu\r\n           pregunta. Por favor, intenta formularla de nuevo o realiza una consulta diferente.»\r\n\r\n        ---\r\n        AQUÍ ESTÁN LAS FUENTES DE CONOCIMIENTO DISPONIBLES:\r\n        ---\r\n        {context_for_prompt}\r\n        ---\r\n        \"\"\"\r\n\r\n        print(system_prompt)\r\n\r\n        # 3. Llamar al modelo de lenguaje\r\n        print(\"🤖 Generando respuesta con citas...\")\r\n        llm_answer, model = self.aoai_client.model_response_with_history(\r\n            query=query, system_prompt=system_prompt, history_msg=history\r\n        )\r\n\r\n        # 4. Identificar las fuentes que SÍ fueron usadas en la respuesta\r\n        # Regex que maneja plurales, sinónimos y es insensible a mayúsculas/minúsculas",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app\\services\\rag_service_audiencias.py",
+        "start": 51,
+        "end": 182,
+        "startLoc": {
+          "line": 51,
+          "column": 22,
+          "position": 343
+        },
+        "endLoc": {
+          "line": 182,
+          "column": 79,
+          "position": 1071
+        }
+      },
+      "secondFile": {
+        "name": "app\\services\\rag_service_sentencias.py",
+        "start": 51,
+        "end": 182,
+        "startLoc": {
+          "line": 51,
+          "column": 22,
+          "position": 343
+        },
+        "endLoc": {
+          "line": 182,
+          "column": 21,
+          "position": 1071
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 20,
+      "fragment": "final_sources = [sources_map[source_id] for source_id in unique_cited_ids if source_id in sources_map]\r\n\r\n        return RAGResponse(model=model, answer=llm_answer, sources=final_sources)\r\n\r\n    # ======================================================================================\r\n    #  PIPELINE PRINCIPAL\r\n    # ======================================================================================\r\n\r\n    def rag_pipeline(self, user_query: str, user_email: str, index_name: str = \"index_sentencias\", top_k: int = 50):\r\n        \"\"\"\r\n        Pipeline completo de RAG que toma una consulta y devuelve una respuesta contextualizada.\r\n\r\n        Args:\r\n            user_query (str): La pregunta del usuario.\r\n            user_email (str): Correo del usuario para obtener historial.\r\n            index_name (str): Nombre del índice de búsqueda.\r\n            top_k (int): Número de fragmentos a recuperar.\r\n        \"\"\"\r\n        print(\r\n            \"######################## RECUPERACIÓN DE FRAGMENTOS RELEVANTES \"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app\\services\\rag_service_audiencias.py",
+        "start": 193,
+        "end": 212,
+        "startLoc": {
+          "line": 193,
+          "column": 9,
+          "position": 1168
+        },
+        "endLoc": {
+          "line": 212,
+          "column": 66,
+          "position": 1287
+        }
+      },
+      "secondFile": {
+        "name": "app\\services\\rag_service_sentencias.py",
+        "start": 190,
+        "end": 209,
+        "startLoc": {
+          "line": 190,
+          "column": 9,
+          "position": 1156
+        },
+        "endLoc": {
+          "line": 209,
+          "column": 74,
+          "position": 1275
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 8,
+      "fragment": "context = self.cosmos.get_messages_by_user_and_time(user_email, collection)\r\n        history = context[-15:] if context else []\r\n\r\n        answers = []\r\n        for m in history:\r\n            if m.get(\"type\") == \"ai\":\r\n                content = m.get(\"content\")\r\n                # Si es string, intenta deserializar",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app\\services\\rag_service_audiencias.py",
+        "start": 223,
+        "end": 230,
+        "startLoc": {
+          "line": 223,
+          "column": 9,
+          "position": 1351
+        },
+        "endLoc": {
+          "line": 230,
+          "column": 37,
+          "position": 1442
+        }
+      },
+      "secondFile": {
+        "name": "app\\services\\rag_service_sentencias.py",
+        "start": 219,
+        "end": 226,
+        "startLoc": {
+          "line": 219,
+          "column": 9,
+          "position": 1335
+        },
+        "endLoc": {
+          "line": 226,
+          "column": 3,
+          "position": 1426
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 16,
+      "fragment": "answer = content.get(\"answer\") if isinstance(content, dict) else None\r\n                if answer:\r\n                    answers.append({\"role\": \"assistant\", \"content\": answer})\r\n            elif m.get(\"type\") == \"human\":\r\n                answers.append({\"role\": \"user\", \"content\": m[\"content\"]})\r\n\r\n        final_response = self.generate_cited_answer(\r\n            query=user_query, history=answers, retrieved_chunks=retrieved_chunks\r\n        )\r\n        return final_response\r\n\r\n\r\nif __name__ == \"__main__\":\r\n    # pregunta_usuario = \"Qué argumentos presentó la defensa de Jorge Barney Veloza García en la apelación?\"\r\n    pregunta_usuario = \"Que se comentó en el caso de mancuso\"\r\n    # pregunta_usuario = \"¿Qué se determinó sobre la participación de la",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app\\services\\rag_service_audiencias.py",
+        "start": 240,
+        "end": 255,
+        "startLoc": {
+          "line": 240,
+          "column": 17,
+          "position": 1522
+        },
+        "endLoc": {
+          "line": 255,
+          "column": 69,
+          "position": 1680
+        }
+      },
+      "secondFile": {
+        "name": "app\\services\\rag_service_sentencias.py",
+        "start": 234,
+        "end": 249,
+        "startLoc": {
+          "line": 234,
+          "column": 17,
+          "position": 1498
+        },
+        "endLoc": {
+          "line": 249,
+          "column": 79,
+          "position": 1656
+        }
+      }
+    }
+  ],
+  "filename": "C:\\Users\\JosserCordobaRivas\\AppData\\Roaming\\npm\\node_modules\\jscpd\\node_modules\\@jscpd\\html-reporter\\dist\\templates\\main.pug"
+}
