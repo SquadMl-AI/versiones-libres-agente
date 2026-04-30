@@ -106,4 +106,3 @@ jobs:
         # Asegúrate de que 'app' sea el nombre correcto de tu carpeta de código fuente
         run: |
           pytest -q --cov=app --cov-report=term-missing --cov-fail-under=70
-          
