@@ -25,7 +25,7 @@ La aplicación permite a los usuarios buscar, explorar y analizar información s
 5. **Proporcionar análisis y métricas** sobre el uso y contenido de la información
 6. **Mantener trazabilidad** del uso a través de feedback y ratings
 
----
+--- 
 
 ## 🏗️ Estructura del Proyecto
 
