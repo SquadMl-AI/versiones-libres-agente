@@ -6,9 +6,7 @@ import unicodedata
 
 from bs4 import BeautifulSoup
 from pydantic import BaseModel
-
 from utils.ai_services import AzureServices
-
 
 db = os.getenv("AZURE_COSMOSDB_DATABASE_NAME")
 collection = os.getenv("AZURE_COSMOSDB_COLLECTION_NAME")

@@ -1,4 +1,4 @@
-from services.rag_service_base import BaseRAGPipeline, QueryRequest, RAGResponse, Source
+from services.rag_service_base import BaseRAGPipeline
 
 
 class RAGPipelineAudiencias(BaseRAGPipeline):
