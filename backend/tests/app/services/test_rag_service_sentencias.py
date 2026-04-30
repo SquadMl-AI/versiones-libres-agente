@@ -166,4 +166,3 @@ def test_rag_pipeline_sentencias_main_execution():
                 top_k=5,
                 user_email="Default",
             )
-

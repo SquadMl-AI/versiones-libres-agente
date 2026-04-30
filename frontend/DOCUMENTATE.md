@@ -27,6 +27,7 @@ La aplicación permite a los usuarios buscar, explorar y analizar información s
 
 --- 
 
+
 ## 🏗️ Estructura del Proyecto
 
 ```
