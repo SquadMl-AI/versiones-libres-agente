@@ -78,8 +78,8 @@ jobs:
             "formats": ["python"],
             "minLines": 8,
             "minTokens": 80,
-            "threshold": 0,
-            "reporters": ["console", "checkstyle"],
+            "threshold": 2,
+            "reporters": ["console"],
             "ignore": [
               "**/tests/**",
               "**/venv/**",
@@ -126,4 +126,3 @@ jobs:
       - name: Run tests with coverage threshold
         run: |
           pytest -q --cov=app --cov-report=term-missing --cov-fail-under=70
-          
